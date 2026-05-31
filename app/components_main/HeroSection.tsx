@@ -92,7 +92,7 @@ const items: MasonryItem[] = [
 
 export default function HeroSection() {
   return (
-    <section className="flex-1 flex items-center max-w-7xl mx-auto w-full  gap-26 ">
+    <section className="flex-1 min-h-screen flex items-center max-w-7xl mx-auto w-full  gap-26 ">
       {/* Left — Masonry */}
       <div className="flex-[1.5] flex items-center justify-center -mt-120 mr-30">
         <Masonry
