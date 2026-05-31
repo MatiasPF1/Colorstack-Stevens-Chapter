@@ -1,0 +1,26 @@
+@keyframes slide-fwd {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes slide-bwd {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+.trackFwd {
+  display: flex;
+  width: max-content;
+  animation: slide-fwd 30s linear infinite;
+}
+
+.trackBwd {
+  display: flex;
+  width: max-content;
+  animation: slide-bwd 30s linear infinite;
+}
+
+.trackFwd:hover,
+.trackBwd:hover {
+  animation-play-state: paused;
+}
