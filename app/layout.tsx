@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Geist } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 import "./globals.css";
 import Navbar from "./Navbar";
+import { cn } from "@/lib/utils";
 
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 
 export default function RootLayout({
@@ -15,9 +17,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`h-full antialiased ${inter.variable} font-sans`}
+      className={cn("h-full", "antialiased", inter.variable, "font-sans", geist.variable)}
     >
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+      <body className="min-h-full flex flex-col bg-[#0D1929]" suppressHydrationWarning>
         <Navbar />
         {children}
       </body>
