@@ -1,14 +1,13 @@
-import type { Metadata } from "next";
-import { Inter, Geist } from "next/font/google";
-
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 import "./globals.css";
 import Navbar from "./Navbar";
 import { cn } from "@/lib/utils";
+import { Inter, Geist } from "next/font/google";
+
+
+
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 export default function RootLayout({
   children,
 }: Readonly<{
