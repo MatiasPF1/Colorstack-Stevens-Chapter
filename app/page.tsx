@@ -1,5 +1,6 @@
 import HeroSection from "./components_main/HeroSection";
 import WhereWeveLanded from "./components_main/WhereWeveLanded";
+import Mission from "./components_main/Mission";
 
 export default function Home() {
   return (
@@ -7,6 +8,7 @@ export default function Home() {
       {/* Main Component Section */}
       <HeroSection />
       <WhereWeveLanded />
+      <Mission />
     </main>
   );
 }
