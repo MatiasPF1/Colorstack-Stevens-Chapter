@@ -1,5 +1,6 @@
 "use client"
 import Masonry from '../reactBitsComponents/Masonry';
+import { MapPin } from 'lucide-react';
 
 interface MasonryItem {
   id: string;
@@ -143,15 +144,14 @@ export default function HeroSection() {
             href="https://www.colorstack.org/member-application-requirements"
             className="bg-[#c42e2e] text-white font-semibold px-8 py-3.5 rounded-full hover:bg-[#a82828] active:scale-95 transition-all duration-200 shadow-lg shadow-red-900/40"
           >
-            Become a Member
+            Become a National Member
           </a>
-          <a
-            href="https://www.colorstack.org/"
-            aria-label="Learn more about ColorStack national organization"
-            className="border border-white/30 text-white/80 font-semibold px-8 py-3.5 rounded-full hover:border-white hover:text-white active:scale-95 transition-all duration-200"
-          >
-            Learn More
-          </a>
+        </div>
+
+        {/* Location */}
+        <div className="flex items-center gap-2 text-white/50 text-sm mt-1">
+          <MapPin size={14} className="text-[#c42e2e] shrink-0" />
+          <span>1 Castle Point Terrace, Hoboken, NJ</span>
         </div>
       </div>
 

@@ -29,7 +29,7 @@ export default function WhereWeveLanded() {
       className="w-full py-4 md:py-16 px-6 text-center"
     >
 
-{/*Container for the where we landed*/}
+{/*Container for the where we landed(if you are from NYU colorstack watching this, thanks for the component)*/}
     <div className="md:-translate-y-22">
       <h2 className="text-3xl md:text-4xl font-bold text-white">
         Where We&apos;ve Landed
