@@ -6,8 +6,8 @@ import { useState } from "react";
 
 {/*Navbar Names and it's references */}
 const NavbarLinkNames = [
-  { label: "About Us", href: "/about" },
-  { label: "Get Involved", href: "/get-involved" },
+  { label: "Contact Us", href: "/Contact Us" },
+  { label: "Gallery", href: "/Gallery" },
   { label: "Officers", href: "/officers" },
   { label: "Sponsorship", href: "/sponsorship" },
 ];
@@ -58,10 +58,7 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/login"
-            className="border-2 border-white text-white text-sm font-semibold px-5 py-1.5 rounded-full hover:bg-white hover:text-[#0D1929] transition-colors whitespace-nowrap"
-          >
+          <Link href="/Components_Login" className="border-2 border-white text-white text-sm font-semibold px-5 py-1.5 rounded-full hover:bg-white hover:text-[#0D1929] transition-colors whitespace-nowrap">
             Log In
           </Link>
         </div>
@@ -118,7 +115,7 @@ export default function Navbar() {
             </Link>
           ))}
           <Link
-            href="/login"
+            href="/Components_Login"
             onClick={() => setOpen(false)}
             className="self-start border-2 border-white text-white text-sm font-semibold px-5 py-1.5 rounded-full hover:bg-white hover:text-[#0D1929] transition-colors"
           >

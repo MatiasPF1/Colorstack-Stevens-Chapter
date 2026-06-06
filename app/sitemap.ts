@@ -9,13 +9,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: "/about",
+      url: "/Gallery",
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: "/get-involved",
+      url: "/Contact Us",
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
