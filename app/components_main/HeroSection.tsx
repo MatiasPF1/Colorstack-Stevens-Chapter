@@ -92,7 +92,11 @@ const items: MasonryItem[] = [
 
 export default function HeroSection() {
   return (
-    <section className="flex-1 min-h-screen flex flex-col md:flex-row items-center max-w-7xl mx-auto w-full md:gap-26 px-6 md:px-0">
+    <section
+      id="hero"
+      aria-label="Introduction to ColorStack at Stevens Institute of Technology"
+      className="flex-1 min-h-screen flex flex-col md:flex-row items-center max-w-7xl mx-auto w-full md:gap-26 px-6 md:px-0"
+    >
       {/* Left — Masonry (desktop only) */}
       <div className="hidden md:flex flex-[1.5] items-center justify-center -mt-120 mr-30">
         <Masonry
@@ -114,7 +118,6 @@ export default function HeroSection() {
 
         {/* Eyebrow */}
         <div className="flex items-center gap-3">
-          <span className="h-px w-8 bg-[#c42e2e]" />
           <p className="text-[#c42e2e] font-semibold text-xs tracking-[0.2em] uppercase">
             About Us
           </p>
@@ -123,13 +126,13 @@ export default function HeroSection() {
         {/* Title */}
         <div className="flex flex-col gap-1">
           <h1 className="text-white font-extrabold text-5xl sm:text-6xl md:text-7xl leading-none tracking-tight">
-            SIT <span className="text-[#c42e2e]">ColorStack</span>
+            Stevens <span className="text-[#c42e2e]">ColorStack</span>
           </h1>
         </div>
 
         {/* Tagline */}
         <p className="text-white/80 text-lg sm:text-xl md:text-2xl font-medium leading-snug max-w-md">
-          Helping Black and Latinx Computer Science students get{" "}
+          Helping Black and Latino Computer Science students get{" "}
           <span className="text-[#c42e2e] font-bold italic">degreed</span> and{" "}
           <span className="text-[#c42e2e] font-bold italic">hired</span> nationwide.
         </p>
@@ -144,6 +147,7 @@ export default function HeroSection() {
           </a>
           <a
             href="https://www.colorstack.org/"
+            aria-label="Learn more about ColorStack national organization"
             className="border border-white/30 text-white/80 font-semibold px-8 py-3.5 rounded-full hover:border-white hover:text-white active:scale-95 transition-all duration-200"
           >
             Learn More
@@ -162,6 +166,7 @@ export default function HeroSection() {
             <a
               key={item.id}
               href={item.url}
+              aria-label="ColorStack Stevens community photo"
               className="flex-none snap-center"
             >
               <img

@@ -33,7 +33,7 @@ export default function Navbar() {
         </div>
 
         {/* Center logo + wordmark */}
-        <Link href="/" className="flex items-center gap-2 shrink-0 mr-16">
+        <Link href="/" className="flex items-center gap-2 shrink-0 mr-16 translate-x-7">
           <Image
             src="/ColorstackStevensLogo.png"
             alt="ColorStack Stevens"
@@ -42,8 +42,8 @@ export default function Navbar() {
             className="object-contain"
             priority
           />
-          <span className="text-white font-bold text-lg tracking-tight whitespace-nowrap text-[25px]">
-            SIT <span className="text-[#c42e2e]">ColorStack</span>
+          <span className="text-white font-bold text-lg tracking-tight whitespace-nowrap text-[25px] ">
+            Stevens <span className="text-[#c42e2e]">ColorStack</span>
           </span>
         </Link>
 

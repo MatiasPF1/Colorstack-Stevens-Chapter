@@ -42,7 +42,11 @@ const bulletPoints = [
 
 export default function Mission() {
   return (
-    <section className="relative w-full overflow-hidden bg-[#0d0d1a] py-20 px-6">
+    <section
+      id="mission"
+      aria-label="ColorStack Stevens mission, strategy, and vision"
+      className="relative w-full overflow-hidden bg-[#0d0d1a] py-20 px-6"
+    >
       {/* Watermark background text */}
 
 
@@ -70,7 +74,7 @@ export default function Mission() {
             <ul className="mt-8 space-y-6">
               {bulletPoints.map((bp) => (
                 <li key={bp.title} className="flex items-start gap-4">
-                  <span className="mt-1 shrink-0 text-[#dc2626]">→</span>
+                  <span className="mt-2 shrink-0 h-2 w-2 rounded-full bg-[#dc2626]" />
                   <div>
                     <p className="font-semibold text-white">{bp.title}</p>
                     <p className="text-sm text-white/50">{bp.description}</p>
@@ -81,7 +85,7 @@ export default function Mission() {
           </div>
 
           {/* Right — e-board photo */}
-          <div className="relative w-full overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10 lg:w-[55%]">
+          <div className="relative w-full overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10 lg:w-[52%]  lg:h-[62%]">
             <Image
               src="/mainPhotos/Colorstack-Eboard.jpg"
               alt="ColorStack @ Stevens E-Board"
@@ -92,7 +96,7 @@ export default function Mission() {
             />
             <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/80 to-transparent px-6 py-5">
               <p className="text-sm font-semibold tracking-wide text-white/90">
-                ColorStack @ Stevens — E-Board
+                ColorStack Stevens E-Board
               </p>
             </div>
           </div>
@@ -109,7 +113,7 @@ export default function Mission() {
               <div className="absolute inset-0">
                 <Image
                   src={card.img}
-                  alt={card.title}
+                  alt={`${card.title}: ${card.description}`}
                   fill
                   className="object-cover opacity-20 transition-opacity duration-300 group-hover:opacity-30"
                 />

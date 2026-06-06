@@ -23,7 +23,11 @@ const logos = [
 
 export default function WhereWeveLanded() {
   return (
-    <section className="w-full py-4 md:py-16 px-6 text-center">
+    <section
+      id="companies"
+      aria-label="Companies where ColorStack Stevens members have interned and worked"
+      className="w-full py-4 md:py-16 px-6 text-center"
+    >
 
 {/*Container for the where we landed*/}
     <div className="md:-translate-y-22">
