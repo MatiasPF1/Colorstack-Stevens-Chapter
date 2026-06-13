@@ -7,7 +7,9 @@ export default function Home() {
   return (
     <main className="flex-1 flex flex-col">
       {/* Main Component Section */}
+      <div className="-translate-y-7 ml-35">
       <HeroSection />
+      </div>
       <WhereWeveLanded />
       <Mission />
       <Footer />
