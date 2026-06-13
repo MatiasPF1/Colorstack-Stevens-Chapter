@@ -45,8 +45,8 @@ export default function Mission() {
     <section
       id="mission"
       aria-label="ColorStack Stevens mission, strategy, and vision"
-      className="relative w-full overflow-hidden bg-[#0d0d1a] py-20 px-6"
-    >
+      className="relative w-full overflow-hidden bg-[#0D1929] py-20 px-6"
+>
       {/* Watermark background text */}
 
 

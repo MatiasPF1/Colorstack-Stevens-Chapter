@@ -37,7 +37,7 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="relative w-full overflow-hidden bg-[#0d0d1a]">
+    <footer className="relative w-full overflow-hidden bg-[#0D1929]">
       <div className="relative z-10 mx-auto max-w-7xl px-5 pt-12 pb-8 sm:px-8 sm:pt-20 sm:pb-10">
 
                                     {/* Top section — 4 columns */}
