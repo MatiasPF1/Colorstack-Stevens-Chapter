@@ -29,46 +29,211 @@ const sections = [
 ];
 
 
+/* ── types ─────────────────────────────────────────────── */
+
+interface HeroPhoto {
+  id: string;
+  sort_order: number;
+  img_path: string;
+  height: number;
+  url: string;
+}
+
+interface MissionPhoto {
+  slot: string;
+  img_path: string;
+}
+
+interface LandingLogo {
+  id: string;
+  sort_order: number;
+  name: string;
+  src: string;
+  alt: string;
+}
+
+/* ── Hero Panel ─────────────────────────────────────────── */
+
 function HeroPanel() {
+  const supabase = createClient();
+  const [photos, setPhotos] = useState<HeroPhoto[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  async function fetchPhotos() {
+    setLoading(true);
+    const { data, error } = await supabase.from("hero_photos").select("*").order("sort_order");
+    if (error) setError(error.message);
+    else setPhotos(data ?? []);
+    setLoading(false);
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchPhotos(); }, []);
+
+  async function addPhoto(file: File) {
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `${Date.now()}.${ext}`;
+    const { error: upErr } = await supabase.storage.from("hero-photos").upload(path, file, { upsert: true });
+    if (upErr) { setError(upErr.message); setUploading(false); return; }
+    const { data: urlData } = supabase.storage.from("hero-photos").getPublicUrl(path);
+    const maxOrder = photos.reduce((m, p) => Math.max(m, p.sort_order), 0);
+    const { error: dbErr } = await supabase.from("hero_photos").insert({
+      img_path: urlData.publicUrl,
+      sort_order: maxOrder + 1,
+      height: 320,
+      url: "https://www.colorstack.org/",
+    });
+    if (dbErr) setError(dbErr.message);
+    else await fetchPhotos();
+    setUploading(false);
+  }
+
+  async function deletePhoto(id: string) {
+    const { error } = await supabase.from("hero_photos").delete().eq("id", id);
+    if (error) setError(error.message);
+    else await fetchPhotos();
+  }
+
   return (
     <div className="space-y-6">
-      <SectionHeader title="Hero Section" description="Manage the gallery photos shown on the landing page." />
-
+      <SectionHeader title="Hero Section" description="Manage the Masonry gallery photos shown on the landing page." />
+      {error && <ErrorBanner message={error} />}
       <Card title="Gallery Photos">
-        <div className="grid grid-cols-3 gap-2">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="aspect-square rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/20 text-xs">
-              Photo {i + 1}
-            </div>
-          ))}
-        </div>
-        <button className="mt-4 w-full py-2 rounded-lg border border-dashed border-white/20 text-white/40 text-sm hover:border-white/40 hover:text-white/60 transition-colors">
-          + Upload Photo
-        </button>
+        {loading ? <LoadingState /> : (
+          <div className="columns-2 sm:columns-3 gap-2 space-y-2">
+            {photos.map((photo) => {
+              const previewH = Math.round((photo.height / 500) * 140);
+              return (
+                <div
+                  key={photo.id}
+                  style={{ height: previewH }}
+                  className="break-inside-avoid w-full rounded-lg bg-white/5 border border-white/10 overflow-hidden relative group hover:border-white/30 transition-colors"
+                >
+                  <img
+                    src={photo.img_path}
+                    alt={`Photo ${photo.sort_order}`}
+                    className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                  />
+                  <div className="absolute inset-0 flex flex-col items-start justify-between p-1.5">
+                    <span className="text-white/70 text-[9px] font-mono bg-black/50 px-1 rounded">
+                      {photo.sort_order}
+                    </span>
+                    <button
+                      onClick={() => deletePhoto(photo.id)}
+                      className="text-[#c42e2e]/80 hover:text-[#c42e2e] bg-black/50 hover:bg-black/70 rounded p-0.5 transition-colors opacity-0 group-hover:opacity-100"
+                      title="Delete"
+                    >
+                      <Trash2 size={10} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        <p className="mt-4 text-xs text-white/30 text-center">
+          {photos.length} photos · displayed as a Masonry grid on the landing page
+        </p>
+        <label className={`mt-2 w-full py-2 rounded-lg border border-dashed flex items-center justify-center gap-2 text-sm cursor-pointer transition-colors ${
+          uploading
+            ? "border-white/10 text-white/20 cursor-wait"
+            : "border-white/20 text-white/40 hover:border-white/40 hover:text-white/60"
+        }`}>
+          <Upload size={13} />
+          {uploading ? "Uploading..." : "+ Add Photo"}
+          <input
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            disabled={uploading}
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) addPhoto(f); }}
+          />
+        </label>
       </Card>
     </div>
   );
 }
 
+const MISSION_SLOTS = [
+  { slot: "eboard",   label: "E-Board Photo",  desc: "Full photo shown on the right side" },
+  { slot: "mission",  label: "Mission Card",   desc: "Background for Mission pillar card" },
+  { slot: "strategy", label: "Strategy Card",  desc: "Background for Strategy pillar card" },
+  { slot: "vision",   label: "Vision Card",    desc: "Background for Vision pillar card" },
+];
+
 function MissionPanel() {
+  const supabase = createClient();
+  const [photos, setPhotos] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [uploadingSlot, setUploadingSlot] = useState<string | null>(null);
+
+  async function fetchPhotos() {
+    setLoading(true);
+    const { data, error } = await supabase.from("mission_photos").select("slot, img_path");
+    if (error) setError(error.message);
+    else {
+      const map: Record<string, string> = {};
+      for (const row of (data ?? []) as MissionPhoto[]) map[row.slot] = row.img_path;
+      setPhotos(map);
+    }
+    setLoading(false);
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchPhotos(); }, []);
+
+  async function changePhoto(slot: string, file: File) {
+    setUploadingSlot(slot);
+    const ext = file.name.split(".").pop();
+    const path = `${slot}-${Date.now()}.${ext}`;
+    const { error: upErr } = await supabase.storage.from("mission-photos").upload(path, file, { upsert: true });
+    if (upErr) { setError(upErr.message); setUploadingSlot(null); return; }
+    const { data: urlData } = supabase.storage.from("mission-photos").getPublicUrl(path);
+    const { error: dbErr } = await supabase.from("mission_photos").update({ img_path: urlData.publicUrl }).eq("slot", slot);
+    if (dbErr) setError(dbErr.message);
+    else await fetchPhotos();
+    setUploadingSlot(null);
+  }
+
   return (
     <div className="space-y-6">
-      <SectionHeader title="Mission Section" description="Manage the photos used in the mission pillar cards." />
-
-      <Card title="Pillar Card Photos">
-        <div className="grid grid-cols-3 gap-3">
-          {["Mission", "Strategy", "Vision"].map((label) => (
-            <div key={label} className="space-y-2">
-              <p className="text-xs text-white/40">{label}</p>
-              <div className="aspect-video rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/20 text-xs">
-                Photo
+      <SectionHeader title="Mission Section" description="Manage the photos used in the mission section." />
+      {error && <ErrorBanner message={error} />}
+      <Card title="Section Photos">
+        {loading ? <LoadingState /> : (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {MISSION_SLOTS.map(({ slot, label, desc }) => (
+              <div key={slot} className="space-y-2">
+                <p className="text-xs font-medium text-white/60">{label}</p>
+                <p className="text-[10px] text-white/30 leading-tight">{desc}</p>
+                <div className="aspect-video rounded-lg overflow-hidden bg-white/5 border border-white/10 relative">
+                  {photos[slot] && (
+                    <img src={photos[slot]} alt={label} className="w-full h-full object-cover opacity-70" />
+                  )}
+                </div>
+                <label className={`w-full py-1.5 rounded-lg border border-dashed text-[11px] flex items-center justify-center gap-1.5 cursor-pointer transition-colors ${
+                  uploadingSlot === slot
+                    ? "border-white/10 text-white/20 cursor-wait"
+                    : "border-white/20 text-white/40 hover:border-white/40 hover:text-white/60"
+                }`}>
+                  <Upload size={10} />
+                  {uploadingSlot === slot ? "Uploading..." : "Change Photo"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="sr-only"
+                    disabled={uploadingSlot !== null}
+                    onChange={(e) => { const f = e.target.files?.[0]; if (f) changePhoto(slot, f); }}
+                  />
+                </label>
               </div>
-              <button className="w-full py-1.5 rounded-lg border border-dashed border-white/20 text-white/40 text-xs hover:border-white/40 hover:text-white/60 transition-colors">
-                + Upload
-              </button>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </Card>
     </div>
   );
@@ -382,6 +547,18 @@ function ProgramsPanel() {
   );
 }
 
+function ErrorBanner({ message }: { message: string }) {
+  return (
+    <div className="rounded-lg bg-[#c42e2e]/10 border border-[#c42e2e]/30 px-4 py-3 text-sm text-[#c42e2e]">
+      {message}
+    </div>
+  );
+}
+
+function LoadingState() {
+  return <div className="py-8 text-center text-sm text-white/30">Loading...</div>;
+}
+
 function Field({ label, children, className = "" }: { label: string; children: React.ReactNode; className?: string }) {
   return (
     <div className={`space-y-1.5 ${className}`}>
@@ -392,23 +569,154 @@ function Field({ label, children, className = "" }: { label: string; children: R
 }
 
 function LandingPanel() {
+  const supabase = createClient();
+  const [logos, setLogos] = useState<LandingLogo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [addForm, setAddForm] = useState({ name: "", alt: "", src: "" });
+  const [addUploading, setAddUploading] = useState(false);
+
+  async function fetchLogos() {
+    setLoading(true);
+    const { data, error } = await supabase.from("landing_logos").select("*").order("sort_order");
+    if (error) setError(error.message);
+    else setLogos(data ?? []);
+    setLoading(false);
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchLogos(); }, []);
+
+  async function uploadLogoFile(file: File): Promise<string | null> {
+    const ext = file.name.split(".").pop();
+    const path = `${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("landing-logos").upload(path, file, { upsert: true });
+    if (error) { setError(error.message); return null; }
+    const { data } = supabase.storage.from("landing-logos").getPublicUrl(path);
+    return data.publicUrl;
+  }
+
+  async function deleteLogo(id: string) {
+    const { error } = await supabase.from("landing_logos").delete().eq("id", id);
+    if (error) setError(error.message);
+    else await fetchLogos();
+  }
+
+  async function addLogo() {
+    if (!addForm.name || !addForm.src) { setError("Name and logo image are required."); return; }
+    setSaving(true);
+    const maxOrder = logos.reduce((m, l) => Math.max(m, l.sort_order), 0);
+    const { error } = await supabase.from("landing_logos").insert({
+      name: addForm.name,
+      alt: addForm.alt || addForm.name,
+      src: addForm.src,
+      sort_order: maxOrder + 1,
+    });
+    if (error) setError(error.message);
+    else { setAddForm({ name: "", alt: "", src: "" }); setShowAddForm(false); await fetchLogos(); }
+    setSaving(false);
+  }
+
   return (
     <div className="space-y-6">
       <SectionHeader title="Where We've Landed" description="Manage the scrolling company logos strip." />
-
+      {error && <ErrorBanner message={error} />}
       <Card title="Company Logos">
-        <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
-          {["Adobe", "Airbnb", "Amazon", "Apple", "Bloomberg", "Duolingo", "Goldman Sachs", "Google", "Jane Street", "JPMorgan", "Meta", "Microsoft"].map((name) => (
-            <div key={name} className="rounded-lg bg-white/5 border border-white/10 p-3 flex flex-col items-center gap-2">
-              <div className="h-8 w-full bg-white/10 rounded" />
-              <span className="text-[10px] text-white/40 text-center leading-tight">{name}</span>
-              <button className="text-[10px] text-[#c42e2e]/60 hover:text-[#c42e2e] transition-colors">Remove</button>
+        {loading ? <LoadingState /> : (
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+            {logos.map((logo) => (
+              <div key={logo.id} className="group rounded-lg bg-white/5 border border-white/10 p-3 flex flex-col items-center gap-2 hover:border-white/20 transition-colors">
+                <div className="h-8 w-full flex items-center justify-center">
+                  <img src={logo.src} alt={logo.alt} className="h-5 max-w-full object-contain brightness-0 invert opacity-60" />
+                </div>
+                <span className="text-[10px] text-white/40 text-center leading-tight">{logo.name}</span>
+                <button
+                  onClick={() => deleteLogo(logo.id)}
+                  className="text-[10px] text-[#c42e2e]/50 hover:text-[#c42e2e] transition-colors opacity-0 group-hover:opacity-100"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {showAddForm && (
+          <div className="mt-4 p-4 border border-white/10 rounded-xl space-y-3">
+            <p className="text-xs font-medium text-white/60">Add Company</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Company Name">
+                <input
+                  value={addForm.name}
+                  onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
+                  placeholder="e.g. Google"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30"
+                />
+              </Field>
+              <Field label="Alt Text">
+                <input
+                  value={addForm.alt}
+                  onChange={(e) => setAddForm({ ...addForm, alt: e.target.value })}
+                  placeholder="Defaults to name"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30"
+                />
+              </Field>
+              <Field label="Logo File (SVG or PNG)" className="sm:col-span-2">
+                <label className={`flex items-center gap-3 w-full border rounded-lg px-3 py-2 text-sm cursor-pointer transition-colors ${
+                  addUploading ? "border-white/10 bg-white/5 opacity-60 cursor-wait" : "border-white/10 bg-white/5 hover:border-white/30"
+                }`}>
+                  <Upload size={14} className="text-white/40 shrink-0" />
+                  <span className="text-white/40">{addUploading ? "Uploading..." : addForm.src ? "Change logo" : "Choose logo file"}</span>
+                  <input
+                    type="file"
+                    accept="image/svg+xml,image/png,image/webp"
+                    className="sr-only"
+                    disabled={addUploading}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setAddUploading(true);
+                      const url = await uploadLogoFile(file);
+                      if (url) setAddForm({ ...addForm, src: url });
+                      setAddUploading(false);
+                    }}
+                  />
+                </label>
+                {addForm.src && (
+                  <div className="mt-2 h-10 w-full rounded-lg bg-white/5 border border-white/10 flex items-center justify-center px-4">
+                    <img src={addForm.src} alt="Preview" className="h-5 max-w-full object-contain brightness-0 invert opacity-60" />
+                  </div>
+                )}
+              </Field>
             </div>
-          ))}
-        </div>
-        <button className="mt-4 w-full py-2 rounded-lg border border-dashed border-white/20 text-white/40 text-sm hover:border-white/40 hover:text-white/60 transition-colors">
-          + Add Company
-        </button>
+            <div className="flex gap-3">
+              <button
+                onClick={addLogo}
+                disabled={saving}
+                className="px-5 py-2 rounded-lg bg-[#c42e2e] text-white text-sm font-medium hover:bg-[#a82525] transition-colors disabled:opacity-50"
+              >
+                {saving ? "Adding..." : "Add Company"}
+              </button>
+              <button
+                onClick={() => { setShowAddForm(false); setAddForm({ name: "", alt: "", src: "" }); }}
+                className="px-4 py-2 rounded-lg border border-white/15 text-white/50 text-sm hover:border-white/30 hover:text-white/70 transition-colors flex items-center gap-1.5"
+              >
+                <X size={13} /> Cancel
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!showAddForm && (
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="mt-3 w-full py-2.5 rounded-xl border border-dashed border-white/20 text-white/40 text-sm hover:border-white/40 hover:text-white/60 transition-colors flex items-center justify-center gap-2"
+          >
+            <Plus size={14} /> Add Company
+          </button>
+        )}
       </Card>
     </div>
   );

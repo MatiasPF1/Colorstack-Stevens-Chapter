@@ -2,79 +2,13 @@
 import Masonry from '../reactBitsComponents/Masonry';
 import { MapPin } from 'lucide-react';
 
-interface MasonryItem {
+interface HeroPhoto {
   id: string;
-  img: string;
+  img_path: string;
   url: string;
   height: number;
+  sort_order: number;
 }
-const items: MasonryItem[] = [
-  {
-    id: "1",
-    img: "/mainPhotos/one.JPG",
-    url: "https://www.colorstack.org/",
-    height: 400,
-  },
-  {
-    id: "2",
-    img: "/mainPhotos/two.JPG",
-    url: "https://www.colorstack.org/",
-    height: 300,
-  },
-  {
-    id: "3",
-    img: "/mainPhotos/three.JPG",
-    url: "https://www.colorstack.org/",
-    height: 500,
-  },
-  {
-    id: "4",
-    img: "/mainPhotos/fourth.JPG",
-    url: "https://www.colorstack.org/",
-    height: 350,
-  },
-  {
-    id: "5",
-    img: "/mainPhotos/fifht.jpg",
-    url: "https://www.colorstack.org/",
-    height: 450,
-  },
-  {
-    id: "6",
-    img: "/mainPhotos/Colorstack-Eboard.jpg",
-    url: "https://www.colorstack.org/",
-    height: 320,
-  },
-  {
-    id: "7",
-    img: "/mainPhotos/sixth.jpeg",
-    url: "https://www.colorstack.org/",
-    height: 320,
-  },
-  {
-    id: "8",
-    img: "/mainPhotos/seventh.jpeg",
-    url: "https://www.colorstack.org/",
-    height: 320,
-  },
-  {
-    id: "9",
-    img: "/mainPhotos/eight.jpeg",
-    url: "https://www.colorstack.org/",
-    height: 320,
-  },
-  {
-    id: "10",
-    img: "/mainPhotos/ninth.jpeg",
-    url: "https://www.colorstack.org/",
-    height: 320,
-  },
-  {
-    id: "11",
-    img: "/mainPhotos/thenth.jpeg",
-    url: "https://www.colorstack.org/",
-    height: 320,
-  },
 
 
 
@@ -87,11 +21,14 @@ const items: MasonryItem[] = [
 
 
 
-  
-];
+export default function HeroSection({ items }: { items: HeroPhoto[] }) {
+  const masonryItems = items.map((p) => ({
+    id: p.id,
+    img: p.img_path,
+    url: p.url,
+    height: p.height,
+  }));
 
-
-export default function HeroSection() {
   return (
     <section
       id="hero"
@@ -101,7 +38,7 @@ export default function HeroSection() {
       {/* Left — Masonry (desktop only) */}
       <div className="hidden md:flex flex-[1.5] items-center justify-center -mt-120 mr-30">
         <Masonry
-          items={items}
+          items={masonryItems}
           ease="power2.out"
           duration={0.3}
           stagger={0.17}
@@ -170,7 +107,7 @@ export default function HeroSection() {
               className="flex-none snap-center"
             >
               <img
-                src={item.img}
+                src={item.img_path}
                 alt=""
                 className="h-52 w-40 object-cover rounded-2xl"
                 draggable={false}

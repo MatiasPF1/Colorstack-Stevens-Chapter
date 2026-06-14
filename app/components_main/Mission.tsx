@@ -2,26 +2,35 @@
 
 import Image from "next/image";
 
+interface MissionPhotos {
+  eboard?: string;
+  mission?: string;
+  strategy?: string;
+  vision?: string;
+}
+
 const WATERMARK_TEXT = "ColorStack · Mission · Strategy · Vision · Community · ";
 
-const cards = [
+const cardDefs = [
   {
+    slot: "mission" as keyof MissionPhotos,
     title: "Mission",
     description:
       "Increase the number of Black and Latinx Computer Science graduates that go on to launch rewarding technical careers.",
-    img: "/mainPhotos/one.JPG",
+    fallback: "/mainPhotos/one.JPG",
   },
   {
+    slot: "strategy" as keyof MissionPhotos,
     title: "Strategy",
     description:
       "Organizing a portfolio of tools, resources, and opportunities to ensure that every member is equipped to complete their degree and land a full-time, technical job.",
-    img: "/mainPhotos/fourth.JPG",
+    fallback: "/mainPhotos/fourth.JPG",
   },
   {
+    slot: "vision" as keyof MissionPhotos,
     title: "Vision",
-    description:
-      "A future where Black and Latinx technologists are at the forefront of innovation.",
-    img: "/mainPhotos/fifht.jpg",
+    description: "A future where Black and Latinx technologists are at the forefront of innovation.",
+    fallback: "/mainPhotos/fifht.jpg",
   },
 ];
 
@@ -40,7 +49,10 @@ const bulletPoints = [
   },
 ];
 
-export default function Mission() {
+export default function Mission({ missionPhotos = {} }: { missionPhotos?: MissionPhotos }) {
+  const eboardSrc = missionPhotos.eboard ?? "/mainPhotos/Colorstack-Eboard.jpg";
+  const cards = cardDefs.map((c) => ({ ...c, img: missionPhotos[c.slot] ?? c.fallback }));
+
   return (
     <section
       id="mission"
@@ -90,7 +102,7 @@ export default function Mission() {
             {/* red top accent */}
             <div className="absolute top-0 left-0 h-0.5 w-0 bg-[#dc2626] z-10 transition-all duration-500 group-hover:w-full" />
             <Image
-              src="/mainPhotos/Colorstack-Eboard.jpg"
+              src={eboardSrc}
               alt="ColorStack @ Stevens E-Board"
               width={1400}
               height={700}
