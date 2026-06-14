@@ -7,7 +7,7 @@ import { useState } from "react";
 {/*Navbar Names and it's references */}
 const NavbarLinkNames = [
   { label: "Contact Us", href: "/Contact Us" },
-  { label: "Resources", href: "/Components_Resources" },
+  { label: "Programs", href: "/Components_Fellowships" },
   { label: "Officers", href: "/officers" },
   { label: "Sponsorship", href: "/sponsorship" },
 ];

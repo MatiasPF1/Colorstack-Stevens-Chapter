@@ -1,3 +1,5 @@
+import { createClient } from "@/lib/supabase/server";
+
 interface ResourceCard {
   id: string;
   image: string;
@@ -9,42 +11,6 @@ interface ResourceCard {
   link: string;
 }
 
-const placeholderCards: ResourceCard[] = [
-  {
-    id: "1",
-    image: "/resources/Nvidia.png",
-    title: "Nvidia Ignite Internship",
-    description:
-      "NVIDIA's Ignite program is a paid internship for first and second-year undergrads. You'll work on real GPU and AI infrastructure projects alongside senior engineers.",
-    deadline: "Nov 1, 2025",
-    tag: "Internship",
-    eligibility: "Freshman & Sophomore",
-    link: "#",
-  },
-  {
-    id: "2",
-    image: "/resources/Microsoft.png",
-    title: "Microsoft Explore Program",
-    description:
-      "A premier 12-week summer internship program designed for freshmen and sophomores exploring a career in software engineering or product management.",
-    deadline: "Oct 15, 2025",
-    tag: "Internship",
-    eligibility: "Freshman & Sophomore",
-    link: "#",
-  },
-  {
-    id: "3",
-    image: "/resources/BreakThroughtTech.png",
-    title: "Break Through Tech",
-    description:
-      "A Cornell Tech initiative offering students access to AI/ML sprints, paid industry internships, and mentorship from engineers at top tech companies.",
-    deadline: "Rolling",
-    tag: "Fellowship",
-    eligibility: "All Years",
-    link: "#",
-  },
-];
-
 function ResourceCardComponent({ card }: { card: ResourceCard }) {
   return (
     <div className="group flex flex-col rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-sm hover:border-white/25 hover:bg-white/8 transition-all duration-300">
@@ -55,11 +21,11 @@ function ResourceCardComponent({ card }: { card: ResourceCard }) {
           alt={card.title}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0D1929]/80 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#0D1929]/80 to-transparent" />
         <span className="absolute top-3 left-3 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm border border-white/10">
           {card.tag}
         </span>
-        <span className="absolute bottom-3 right-3 rounded-full bg-[#0D1929]/70 px-3 py-1 text-xs font-medium text-white/70 backdrop-blur-sm border border-white/10">
+        <span className="absolute bottom-3 right-3 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md border border-white/30">
           {card.eligibility}
         </span>
       </div>
@@ -93,7 +59,9 @@ function ResourceCardComponent({ card }: { card: ResourceCard }) {
             <span>Apply by {card.deadline}</span>
           </div>
           <a
-            href={card.link}
+            href={/^https?:\/\//.test(card.link) ? card.link : "#"}
+            rel="noopener noreferrer"
+            target="_blank"
             className="text-xs font-medium text-white/70 hover:text-white transition-colors duration-200 flex items-center gap-1"
           >
             Learn more
@@ -114,7 +82,18 @@ function ResourceCardComponent({ card }: { card: ResourceCard }) {
   );
 }
 
-export default function ResourcesPage() {
+export default async function ResourcesPage() {
+  const supabase = await createClient();
+  const { data: cards, error } = await supabase
+    .from("programs")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("Failed to load programs:", error.message);
+  }
+
+  const programs: ResourceCard[] = cards ?? [];
   return (
     <main className="min-h-screen w-full bg-[#0D1929] px-6 py-20">
       <div className="mx-auto max-w-6xl">
@@ -132,7 +111,7 @@ export default function ResourcesPage() {
 
         {/* Cards Grid */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {placeholderCards.map((card) => (
+          {programs.map((card) => (
             <ResourceCardComponent key={card.id} card={card} />
           ))}
         </div>

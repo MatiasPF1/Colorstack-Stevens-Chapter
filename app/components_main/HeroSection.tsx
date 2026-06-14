@@ -125,7 +125,7 @@ export default function HeroSection() {
         </div>
 
         {/* Title */}
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 text-center md:text-left">
           <h1 className="text-white font-extrabold text-5xl sm:text-6xl md:text-7xl leading-none tracking-tight">
             Stevens <span className="text-[#c42e2e]">ColorStack</span>
           </h1>
