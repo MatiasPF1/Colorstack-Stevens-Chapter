@@ -32,8 +32,11 @@ const sections = [
 /* ── types ─────────────────────────────────────────────── */
 
 interface HeroPhoto {
-  name: string;
-  publicUrl: string;
+  id: string;
+  img_path: string;
+  url: string;
+  height: number;
+  sort_order: number;
 }
 
 interface MissionPhoto {
@@ -60,15 +63,12 @@ function HeroPanel() {
 
   async function fetchPhotos() {
     setLoading(true);
-    const { data, error } = await supabase.storage.from("hero-photos").list("", { sortBy: { column: "created_at", order: "asc" } });
+    const { data, error } = await supabase
+      .from("hero_photos")
+      .select("*")
+      .order("sort_order");
     if (error) { setError(error.message); setLoading(false); return; }
-    const mapped = (data ?? [])
-      .filter(f => f.name !== ".emptyFolderPlaceholder")
-      .map(f => ({
-        name: f.name,
-        publicUrl: supabase.storage.from("hero-photos").getPublicUrl(f.name).data.publicUrl,
-      }));
-    setPhotos(mapped);
+    setPhotos((data ?? []) as HeroPhoto[]);
     setLoading(false);
   }
 
@@ -79,14 +79,30 @@ function HeroPanel() {
     setUploading(true);
     const ext = file.name.split(".").pop();
     const path = `${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from("hero-photos").upload(path, file, { upsert: true });
-    if (error) setError(error.message);
+    const { error: upErr } = await supabase.storage
+      .from("hero-photos")
+      .upload(path, file, { upsert: true });
+    if (upErr) { setError(upErr.message); setUploading(false); return; }
+    const { data: urlData } = supabase.storage.from("hero-photos").getPublicUrl(path);
+    const nextOrder = photos.length > 0 ? Math.max(...photos.map(p => p.sort_order)) + 1 : 1;
+    const { error: dbErr } = await supabase.from("hero_photos").insert({
+      img_path: urlData.publicUrl,
+      url: "https://www.colorstack.org/",
+      height: 320,
+      sort_order: nextOrder,
+    });
+    if (dbErr) setError(dbErr.message);
     else await fetchPhotos();
     setUploading(false);
   }
 
-  async function deletePhoto(name: string) {
-    const { error } = await supabase.storage.from("hero-photos").remove([name]);
+  async function deletePhoto(photo: HeroPhoto) {
+    // Extract storage path from public URL (last segment)
+    const storagePath = photo.img_path.split("/").pop();
+    if (storagePath) {
+      await supabase.storage.from("hero-photos").remove([storagePath]);
+    }
+    const { error } = await supabase.from("hero_photos").delete().eq("id", photo.id);
     if (error) setError(error.message);
     else await fetchPhotos();
   }
@@ -100,13 +116,13 @@ function HeroPanel() {
           <div className="columns-2 sm:columns-3 gap-2 space-y-2">
             {photos.map((photo, i) => (
               <div
-                key={photo.name}
+                key={photo.id}
                 style={{ height: 100 }}
                 className="break-inside-avoid w-full rounded-lg bg-white/5 border border-white/10 overflow-hidden relative group hover:border-white/30 transition-colors"
               >
                 <img
-                  src={photo.publicUrl}
-                  alt={photo.name}
+                  src={photo.img_path}
+                  alt={`Hero photo ${i + 1}`}
                   className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
                 />
                 <div className="absolute inset-0 flex flex-col items-start justify-between p-1.5">
@@ -114,7 +130,7 @@ function HeroPanel() {
                     {i + 1}
                   </span>
                   <button
-                    onClick={() => deletePhoto(photo.name)}
+                    onClick={() => deletePhoto(photo)}
                     className="text-[#c42e2e]/80 hover:text-[#c42e2e] bg-black/50 hover:bg-black/70 rounded p-0.5 transition-colors opacity-0 group-hover:opacity-100"
                     title="Delete"
                   >
@@ -179,14 +195,15 @@ function MissionPanel() {
 
   async function changePhoto(slot: string, file: File) {
     setUploadingSlot(slot);
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) await supabase.auth.refreshSession();
+    setError(null);
     const ext = file.name.split(".").pop();
     const path = `${slot}-${Date.now()}.${ext}`;
-    const { error: upErr } = await supabase.storage.from("mission-photos").upload(path, file, { upsert: true });
+    const { error: upErr } = await supabase.storage.from("mission-photos").upload(path, file);
     if (upErr) { setError(upErr.message); setUploadingSlot(null); return; }
     const { data: urlData } = supabase.storage.from("mission-photos").getPublicUrl(path);
-    const { error: dbErr } = await supabase.from("mission_photos").update({ img_path: urlData.publicUrl }).eq("slot", slot);
+    const { error: dbErr } = await supabase
+      .from("mission_photos")
+      .upsert({ slot, img_path: urlData.publicUrl }, { onConflict: "slot" });
     if (dbErr) setError(dbErr.message);
     else await fetchPhotos();
     setUploadingSlot(null);
