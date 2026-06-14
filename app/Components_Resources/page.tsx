@@ -1,142 +1,19 @@
-interface ResourceCard {
-  id: string;
-  image: string;
-  title: string;
-  description: string;
-  deadline: string;
-  tag: string;
-  eligibility: string;
-  link: string;
-}
-
-const placeholderCards: ResourceCard[] = [
-  {
-    id: "1",
-    image: "/resources/Nvidia.png",
-    title: "Nvidia Ignite Internship",
-    description:
-      "NVIDIA's Ignite program is a paid internship for first and second-year undergrads. You'll work on real GPU and AI infrastructure projects alongside senior engineers.",
-    deadline: "Nov 1, 2025",
-    tag: "Internship",
-    eligibility: "Freshman & Sophomore",
-    link: "#",
-  },
-  {
-    id: "2",
-    image: "/resources/Microsoft.png",
-    title: "Microsoft Explore Program",
-    description:
-      "A premier 12-week summer internship program designed for freshmen and sophomores exploring a career in software engineering or product management.",
-    deadline: "Oct 15, 2025",
-    tag: "Internship",
-    eligibility: "Freshman & Sophomore",
-    link: "#",
-  },
-  {
-    id: "3",
-    image: "/resources/BreakThroughtTech.png",
-    title: "Break Through Tech",
-    description:
-      "A Cornell Tech initiative offering students access to AI/ML sprints, paid industry internships, and mentorship from engineers at top tech companies.",
-    deadline: "Rolling",
-    tag: "Fellowship",
-    eligibility: "All Years",
-    link: "#",
-  },
-];
-
-function ResourceCardComponent({ card }: { card: ResourceCard }) {
-  return (
-    <div className="group flex flex-col rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-sm hover:border-white/25 hover:bg-white/8 transition-all duration-300">
-      {/* Image */}
-      <div className="relative h-44 w-full overflow-hidden">
-        <img
-          src={card.image}
-          alt={card.title}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0D1929]/80 to-transparent" />
-        <span className="absolute top-3 left-3 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm border border-white/10">
-          {card.tag}
-        </span>
-        <span className="absolute bottom-3 right-3 rounded-full bg-[#0D1929]/70 px-3 py-1 text-xs font-medium text-white/70 backdrop-blur-sm border border-white/10">
-          {card.eligibility}
-        </span>
-      </div>
-
-      {/* Body */}
-      <div className="flex flex-1 flex-col gap-3 p-5">
-        <h3 className="text-base font-semibold text-white leading-snug">
-          {card.title}
-        </h3>
-        <p className="text-sm text-white/55 leading-relaxed flex-1">
-          {card.description}
-        </p>
-
-        {/* Footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-white/10">
-          <div className="flex items-center gap-1.5 text-xs text-white/45">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-3.5 w-3.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            <span>Apply by {card.deadline}</span>
-          </div>
-          <a
-            href={card.link}
-            className="text-xs font-medium text-white/70 hover:text-white transition-colors duration-200 flex items-center gap-1"
-          >
-            Learn more
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-3 w-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </a>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function ResourcesPage() {
   return (
-    <main className="min-h-screen w-full bg-[#0D1929] px-6 py-20">
-      <div className="mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="text-center mb-14">
-          <h1 className="text-3xl font-bold text-white md:text-4xl">
-            Fellowships, Internships & Programs
-          </h1>
-          <p className="mt-4 text-base text-white/55 leading-relaxed max-w-2xl mx-auto">
-            A curated list of opportunities to strengthen your CS resume, from freshman
-            programs to competitive summer internships and research fellowships. Apply
-            early, the timeline matters.
-          </p>
-        </div>
-
-        {/* Cards Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {placeholderCards.map((card) => (
-            <ResourceCardComponent key={card.id} card={card} />
-          ))}
-        </div>
+    <main className="min-h-screen w-full bg-[#0D1929] px-6 py-24">
+      <div className="mx-auto max-w-3xl text-center">
+        
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white leading-tight mb-6">
+          Events &amp; Resources
+        </h1>
+        <p className="text-white/55 text-lg leading-relaxed max-w-xl mx-auto">
+          This is where you&apos;ll find everything ColorStack Stevens has to offer
+          upcoming events, workshops, networking opportunities, career resources,
+          and more. Check back soon as we continue to grow.
+        </p>
       </div>
     </main>
   );
 }
+
+

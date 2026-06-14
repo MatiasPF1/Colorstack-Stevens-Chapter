@@ -22,10 +22,10 @@ function ResourceCardComponent({ card }: { card: ResourceCard }) {
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-linear-to-t from-[#0D1929]/80 to-transparent" />
-        <span className="absolute top-3 left-3 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm border border-white/10">
+        <span className="absolute top-3 left-3 rounded-full bg-indigo-600/90 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm border border-indigo-400/40">
           {card.tag}
         </span>
-        <span className="absolute bottom-3 right-3 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md border border-white/30">
+        <span className="absolute bottom-3 right-3 rounded-full bg-emerald-600/90 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md border border-emerald-400/40">
           {card.eligibility}
         </span>
       </div>

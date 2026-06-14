@@ -32,11 +32,8 @@ const sections = [
 /* ── types ─────────────────────────────────────────────── */
 
 interface HeroPhoto {
-  id: string;
-  sort_order: number;
-  img_path: string;
-  height: number;
-  url: string;
+  name: string;
+  publicUrl: string;
 }
 
 interface MissionPhoto {
@@ -63,9 +60,15 @@ function HeroPanel() {
 
   async function fetchPhotos() {
     setLoading(true);
-    const { data, error } = await supabase.from("hero_photos").select("*").order("sort_order");
-    if (error) setError(error.message);
-    else setPhotos(data ?? []);
+    const { data, error } = await supabase.storage.from("hero-photos").list("", { sortBy: { column: "created_at", order: "asc" } });
+    if (error) { setError(error.message); setLoading(false); return; }
+    const mapped = (data ?? [])
+      .filter(f => f.name !== ".emptyFolderPlaceholder")
+      .map(f => ({
+        name: f.name,
+        publicUrl: supabase.storage.from("hero-photos").getPublicUrl(f.name).data.publicUrl,
+      }));
+    setPhotos(mapped);
     setLoading(false);
   }
 
@@ -76,23 +79,14 @@ function HeroPanel() {
     setUploading(true);
     const ext = file.name.split(".").pop();
     const path = `${Date.now()}.${ext}`;
-    const { error: upErr } = await supabase.storage.from("hero-photos").upload(path, file, { upsert: true });
-    if (upErr) { setError(upErr.message); setUploading(false); return; }
-    const { data: urlData } = supabase.storage.from("hero-photos").getPublicUrl(path);
-    const maxOrder = photos.reduce((m, p) => Math.max(m, p.sort_order), 0);
-    const { error: dbErr } = await supabase.from("hero_photos").insert({
-      img_path: urlData.publicUrl,
-      sort_order: maxOrder + 1,
-      height: 320,
-      url: "https://www.colorstack.org/",
-    });
-    if (dbErr) setError(dbErr.message);
+    const { error } = await supabase.storage.from("hero-photos").upload(path, file, { upsert: true });
+    if (error) setError(error.message);
     else await fetchPhotos();
     setUploading(false);
   }
 
-  async function deletePhoto(id: string) {
-    const { error } = await supabase.from("hero_photos").delete().eq("id", id);
+  async function deletePhoto(name: string) {
+    const { error } = await supabase.storage.from("hero-photos").remove([name]);
     if (error) setError(error.message);
     else await fetchPhotos();
   }
@@ -104,34 +98,31 @@ function HeroPanel() {
       <Card title="Gallery Photos">
         {loading ? <LoadingState /> : (
           <div className="columns-2 sm:columns-3 gap-2 space-y-2">
-            {photos.map((photo) => {
-              const previewH = Math.round((photo.height / 500) * 140);
-              return (
-                <div
-                  key={photo.id}
-                  style={{ height: previewH }}
-                  className="break-inside-avoid w-full rounded-lg bg-white/5 border border-white/10 overflow-hidden relative group hover:border-white/30 transition-colors"
-                >
-                  <img
-                    src={photo.img_path}
-                    alt={`Photo ${photo.sort_order}`}
-                    className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
-                  />
-                  <div className="absolute inset-0 flex flex-col items-start justify-between p-1.5">
-                    <span className="text-white/70 text-[9px] font-mono bg-black/50 px-1 rounded">
-                      {photo.sort_order}
-                    </span>
-                    <button
-                      onClick={() => deletePhoto(photo.id)}
-                      className="text-[#c42e2e]/80 hover:text-[#c42e2e] bg-black/50 hover:bg-black/70 rounded p-0.5 transition-colors opacity-0 group-hover:opacity-100"
-                      title="Delete"
-                    >
-                      <Trash2 size={10} />
-                    </button>
-                  </div>
+            {photos.map((photo, i) => (
+              <div
+                key={photo.name}
+                style={{ height: 100 }}
+                className="break-inside-avoid w-full rounded-lg bg-white/5 border border-white/10 overflow-hidden relative group hover:border-white/30 transition-colors"
+              >
+                <img
+                  src={photo.publicUrl}
+                  alt={photo.name}
+                  className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                />
+                <div className="absolute inset-0 flex flex-col items-start justify-between p-1.5">
+                  <span className="text-white/70 text-[9px] font-mono bg-black/50 px-1 rounded">
+                    {i + 1}
+                  </span>
+                  <button
+                    onClick={() => deletePhoto(photo.name)}
+                    className="text-[#c42e2e]/80 hover:text-[#c42e2e] bg-black/50 hover:bg-black/70 rounded p-0.5 transition-colors opacity-0 group-hover:opacity-100"
+                    title="Delete"
+                  >
+                    <Trash2 size={10} />
+                  </button>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         )}
         <p className="mt-4 text-xs text-white/30 text-center">
@@ -188,6 +179,8 @@ function MissionPanel() {
 
   async function changePhoto(slot: string, file: File) {
     setUploadingSlot(slot);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) await supabase.auth.refreshSession();
     const ext = file.name.split(".").pop();
     const path = `${slot}-${Date.now()}.${ext}`;
     const { error: upErr } = await supabase.storage.from("mission-photos").upload(path, file, { upsert: true });
@@ -607,6 +600,8 @@ function LandingPanel() {
   async function addLogo() {
     if (!addForm.name || !addForm.src) { setError("Name and logo image are required."); return; }
     setSaving(true);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) await supabase.auth.refreshSession();
     const maxOrder = logos.reduce((m, l) => Math.max(m, l.sort_order), 0);
     const { error } = await supabase.from("landing_logos").insert({
       name: addForm.name,

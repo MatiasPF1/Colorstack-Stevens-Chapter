@@ -73,7 +73,7 @@ export default function Mission({ missionPhotos = {} }: { missionPhotos?: Missio
           {/* Left — heading + bullets */}
           <div className="flex-1">
             <h2 className="text-4xl font-bold leading-tight text-white md:text-5xl lg:text-6xl">
-              ColorStack&apos;s mission
+              ColorStack&apos;s
               <br />
               <span className="text-[#dc2626]">at Stevens.</span>
             </h2>
