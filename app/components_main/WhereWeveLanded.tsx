@@ -34,11 +34,11 @@ export default function WhereWeveLanded({ logos = FALLBACK_LOGOS }: { logos?: Lo
     <section
       id="companies"
       aria-label="Companies where ColorStack Stevens members have interned and worked"
-      className="w-full py-4 md:py-16 px-6 text-center"
+      className="w-full px-6 pt-4 pb-2 text-center md:pt-16 md:pb-6"
     >
 
 {/*Container for the where we landed(if you are from NYU colorstack watching this, thanks for the component)*/}
-    <div className="md:-translate-y-22">
+    <div className="md:-translate-y-16">
       <h2 className="text-3xl md:text-4xl font-bold text-white">
         Where We&apos;ve Landed
       </h2>
@@ -48,7 +48,7 @@ export default function WhereWeveLanded({ logos = FALLBACK_LOGOS }: { logos?: Lo
     </div>
 
       <div
-        className="mt-6 md:mt-0 md:-translate-y-5 w-full overflow-hidden"
+        className="mt-6 w-full overflow-hidden md:mt-0 md:-translate-y-3"
         style={{
           maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
           WebkitMaskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
