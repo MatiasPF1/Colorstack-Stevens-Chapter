@@ -4,18 +4,66 @@ interface Officer {
   name: string;
   role: string;
   img: string;
+  bio?: string;
   linkedin?: string;
+  email?: string;
 }
 
 const officers: Officer[] = [
-  { name: "Officer Name", role: "President",     img: "/mainPhotos/Colorstack-Eboard.jpg" },
-  { name: "Officer Name", role: "Vice President",img: "/mainPhotos/Colorstack-Eboard.jpg" },
-  { name: "Officer Name", role: "Secretary",     img: "/mainPhotos/Colorstack-Eboard.jpg" },
-  { name: "Officer Name", role: "Treasurer",     img: "/mainPhotos/Colorstack-Eboard.jpg" },
-  { name: "Officer Name", role: "Outreach Lead", img: "/mainPhotos/Colorstack-Eboard.jpg" },
-  { name: "Officer Name", role: "Tech Lead",     img: "/mainPhotos/Colorstack-Eboard.jpg" },
-  { name: "Officer Name", role: "Events Lead",   img: "/mainPhotos/Colorstack-Eboard.jpg" },
-  { name: "Officer Name", role: "Marketing Lead",img: "/mainPhotos/Colorstack-Eboard.jpg" },
+  {
+    name: "Alejandro",
+    role: "President",
+    img: "/E-Board/Alejandro_President.jpg",
+    bio: "Leads the chapter vision, oversees strategy, and keeps the team aligned across initiatives.",
+  },
+  {
+    name: "Matias",
+    role: "Vice President",
+    img: "/E-Board/Matias_VP.jpg",
+    bio: "Supports chapter operations, coordinates leadership efforts, and helps drive execution across programs.",
+  },
+  {
+    name: "Alvaro",
+    role: "Head of Tech",
+    img: "/E-Board/Alvaro_HeadOfTech.jpg",
+    bio: "Builds technical systems, manages web initiatives, and supports the chapter's digital infrastructure.",
+  },
+  {
+    name: "Grant",
+    role: "Head of Tech",
+    img: "/E-Board/Grant_HeadofTech.jpg",
+    bio: "Shapes technical projects, improves online experiences, and helps maintain chapter tools and platforms.",
+  },
+  {
+    name: "Juliana",
+    role: "Treasurer",
+    img: "/E-Board/Juliana_Treasurer.jpg",
+    bio: "Manages budgeting, tracks finances, and helps the chapter allocate resources responsibly.",
+  },
+  {
+    name: "Kevin",
+    role: "Secretary",
+    img: "/E-Board/Kevin_Secretary.jpg",
+    bio: "Keeps records organized, documents decisions, and supports communication across the executive board.",
+  },
+  {
+    name: "JayJay",
+    role: "External Relations",
+    img: "/E-Board/JayJay_ExternalRelations.jpg",
+    bio: "Builds relationships with partners, expands outreach, and represents the chapter beyond campus.",
+  },
+  {
+    name: "Gregorio",
+    role: "PR Chair",
+    img: "/E-Board/Gregorio_PR Chair.jpg",
+    bio: "Leads public relations efforts, strengthens visibility, and helps shape how the chapter is presented.",
+  },
+  {
+    name: "Sydney",
+    role: "PR",
+    img: "/E-Board/Sydney_PR.png",
+    bio: "Supports promotional campaigns, social presence, and communication that keeps the community engaged.",
+  },
 ];
 
 export default function OfficerSection() {
@@ -43,7 +91,9 @@ export default function OfficerSection() {
               name={o.name}
               role={o.role}
               img={o.img}
+              bio={o.bio}
               linkedin={o.linkedin}
+              email={o.email}
             />
           ))}
         </div>
