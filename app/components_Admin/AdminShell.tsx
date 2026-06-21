@@ -10,6 +10,7 @@ import {
   Target,
   Building2,
   GraduationCap,
+  Users,
   Pencil,
   Trash2,
   Plus,
@@ -26,6 +27,7 @@ const sections = [
   { id: "mission",  label: "Mission",           icon: Target },
   { id: "landing",  label: "Where We've Landed", icon: Building2 },
   { id: "programs", label: "Programs",           icon: GraduationCap },
+  { id: "officers", label: "Officers",           icon: Users },
 ];
 
 
@@ -50,6 +52,18 @@ interface LandingLogo {
   name: string;
   src: string;
   alt: string;
+}
+
+interface OfficerCard {
+  id: string;
+  sort_order: number;
+  name: string;
+  role: string;
+  img: string;
+  bio: string | null;
+  linkedin: string | null;
+  email: string | null;
+  is_active: boolean;
 }
 
 /* ── Hero Panel ─────────────────────────────────────────── */
@@ -557,6 +571,321 @@ function ProgramsPanel() {
   );
 }
 
+/* Officers Panel */
+
+const defaultOfficer: Omit<OfficerCard, "id"> = {
+  sort_order: 1,
+  name: "",
+  role: "",
+  img: "",
+  bio: "",
+  linkedin: "",
+  email: "",
+  is_active: true,
+};
+
+function OfficersPanel() {
+  const supabase = createClient();
+  const [officers, setOfficers] = useState<OfficerCard[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [form, setForm] = useState<Omit<OfficerCard, "id">>(defaultOfficer);
+  const [saving, setSaving] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
+
+  async function fetchOfficers() {
+    setLoading(true);
+    setError(null);
+    const { data, error } = await supabase
+      .from("eboard_members")
+      .select("*")
+      .order("sort_order", { ascending: true });
+    if (error) setError(error.message);
+    else setOfficers((data ?? []) as OfficerCard[]);
+    setLoading(false);
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect
+  useEffect(() => { fetchOfficers(); }, []);
+
+  async function uploadOfficerImage(file: File): Promise<string | null> {
+    setImageUploading(true);
+    setError(null);
+    const ext = file.name.split(".").pop();
+    const path = `${Date.now()}.${ext}`;
+    const { error } = await supabase.storage
+      .from("officer-images")
+      .upload(path, file, { upsert: true });
+    setImageUploading(false);
+    if (error) { setError(error.message); return null; }
+    const { data } = supabase.storage.from("officer-images").getPublicUrl(path);
+    return data.publicUrl;
+  }
+
+  function openEdit(officer: OfficerCard) {
+    setEditingId(officer.id);
+    setShowAddForm(false);
+    setForm({
+      sort_order: officer.sort_order,
+      name: officer.name,
+      role: officer.role,
+      img: officer.img,
+      bio: officer.bio ?? "",
+      linkedin: officer.linkedin ?? "",
+      email: officer.email ?? "",
+      is_active: officer.is_active,
+    });
+  }
+
+  function openAdd() {
+    const nextOrder = officers.length > 0 ? Math.max(...officers.map((o) => o.sort_order)) + 1 : 1;
+    setEditingId(null);
+    setForm({ ...defaultOfficer, sort_order: nextOrder });
+    setShowAddForm(true);
+  }
+
+  function cancelForm() {
+    setEditingId(null);
+    setShowAddForm(false);
+    setForm(defaultOfficer);
+  }
+
+  function validateOfficer() {
+    if (!form.name.trim() || !form.role.trim()) return "Name and role are required.";
+    if (!form.img.trim()) return "Officer image is required.";
+    if (form.linkedin && !validateUrl(form.linkedin)) return "LinkedIn must be a valid http:// or https:// URL.";
+    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return "Email must be a valid email address.";
+    return null;
+  }
+
+  async function saveOfficer() {
+    const validationError = validateOfficer();
+    if (validationError) { setError(validationError); return; }
+
+    setSaving(true);
+    setError(null);
+    const payload = {
+      ...form,
+      name: form.name.trim(),
+      role: form.role.trim(),
+      img: form.img.trim(),
+      bio: form.bio?.trim() || null,
+      linkedin: form.linkedin?.trim() || null,
+      email: form.email?.trim() || null,
+      sort_order: Number(form.sort_order) || 1,
+    };
+
+    const { error } = editingId
+      ? await supabase.from("eboard_members").update(payload).eq("id", editingId)
+      : await supabase.from("eboard_members").insert(payload);
+
+    if (error) setError(error.message);
+    else { cancelForm(); await fetchOfficers(); }
+    setSaving(false);
+  }
+
+  async function deleteOfficer(id: string) {
+    const { error } = await supabase.from("eboard_members").delete().eq("id", id);
+    if (error) setError(error.message);
+    else { if (editingId === id) cancelForm(); await fetchOfficers(); }
+  }
+
+  return (
+    <div className="space-y-6">
+      <SectionHeader title="Officers" description="Add, edit, reorder, or hide leadership cards shown on the Officers page." />
+      {error && <ErrorBanner message={error} />}
+
+      <Card title="Current Officers">
+        {loading ? <LoadingState /> : (
+          <div className="space-y-3">
+            {officers.map((officer) => (
+              <div
+                key={officer.id}
+                className={`flex items-start gap-4 p-4 rounded-xl border transition-colors overflow-hidden ${
+                  editingId === officer.id
+                    ? "border-white/30 bg-white/10"
+                    : "border-white/10 bg-white/5 hover:border-white/20"
+                }`}
+              >
+                <div className="h-16 w-14 shrink-0 rounded-lg overflow-hidden bg-white/5 border border-white/10">
+                  {officer.img ? (
+                    <img src={officer.img} alt={officer.name} className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center text-white/20 text-[10px]">No img</div>
+                  )}
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-semibold text-white truncate">{officer.name}</p>
+                    {!officer.is_active && (
+                      <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-white/45">Hidden</span>
+                    )}
+                  </div>
+                  <p className="text-xs text-white/50 mt-0.5">{officer.role}</p>
+                  <p className="text-xs text-white/35 mt-1 line-clamp-1">{officer.bio}</p>
+                  <div className="flex items-center gap-2 mt-2 flex-wrap">
+                    <span className="text-[10px] text-white/30">Order: {officer.sort_order}</span>
+                    {officer.email && <span className="text-[10px] text-white/30">{officer.email}</span>}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => openEdit(officer)}
+                    className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-colors"
+                    title="Edit"
+                  >
+                    <Pencil size={14} />
+                  </button>
+                  <button
+                    onClick={() => deleteOfficer(officer.id)}
+                    className="p-1.5 rounded-lg text-[#c42e2e]/50 hover:text-[#c42e2e] hover:bg-[#c42e2e]/10 transition-colors"
+                    title="Delete"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <button
+          onClick={openAdd}
+          className="mt-3 w-full py-2.5 rounded-xl border border-dashed border-white/20 text-white/40 text-sm hover:border-white/40 hover:text-white/60 transition-colors flex items-center justify-center gap-2"
+        >
+          <Plus size={14} /> Add Officer
+        </button>
+      </Card>
+
+      {(editingId !== null || showAddForm) && (
+        <Card title={editingId ? "Edit Officer" : "New Officer"}>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Name">
+              <input
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                placeholder="e.g. Alejandro"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30"
+              />
+            </Field>
+
+            <Field label="Role">
+              <input
+                value={form.role}
+                onChange={(e) => setForm({ ...form, role: e.target.value })}
+                placeholder="e.g. President"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30"
+              />
+            </Field>
+
+            <Field label="Order">
+              <input
+                type="number"
+                min="1"
+                value={form.sort_order}
+                onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30"
+              />
+            </Field>
+
+            <Field label="Visible">
+              <label className="flex h-10 items-center gap-3 rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white/60">
+                <input
+                  type="checkbox"
+                  checked={form.is_active}
+                  onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
+                  className="h-4 w-4 accent-[#c42e2e]"
+                />
+                Show on officers page
+              </label>
+            </Field>
+
+            <Field label="Image">
+              <label className="flex flex-col gap-2 cursor-pointer">
+                <div className={`flex items-center gap-3 w-full border rounded-lg px-3 py-2 text-sm transition-colors ${
+                  imageUploading
+                    ? "border-white/10 bg-white/5 opacity-60 cursor-wait"
+                    : "border-white/10 bg-white/5 hover:border-white/30"
+                }`}>
+                  <Upload size={14} className="text-white/40 shrink-0" />
+                  <span className="text-white/40 truncate">
+                    {imageUploading ? "Uploading..." : form.img ? "Change image" : "Choose image from computer"}
+                  </span>
+                </div>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  disabled={imageUploading}
+                  className="sr-only"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const url = await uploadOfficerImage(file);
+                    if (url) setForm({ ...form, img: url });
+                  }}
+                />
+              </label>
+              {form.img && (
+                <div className="mt-2 h-28 w-24 rounded-lg overflow-hidden border border-white/10">
+                  <img src={form.img} alt="Preview" className="h-full w-full object-cover" />
+                </div>
+              )}
+            </Field>
+
+            <Field label="Email">
+              <input
+                value={form.email ?? ""}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                placeholder="name@stevens.edu"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30"
+              />
+            </Field>
+
+            <Field label="LinkedIn URL" className="sm:col-span-2">
+              <input
+                value={form.linkedin ?? ""}
+                onChange={(e) => setForm({ ...form, linkedin: e.target.value })}
+                placeholder="https://www.linkedin.com/in/..."
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30"
+              />
+            </Field>
+
+            <Field label="Bio" className="sm:col-span-2">
+              <textarea
+                value={form.bio ?? ""}
+                onChange={(e) => setForm({ ...form, bio: e.target.value })}
+                placeholder="Short leadership bio..."
+                rows={3}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30 resize-none"
+              />
+            </Field>
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button
+              onClick={saveOfficer}
+              disabled={saving}
+              className="px-5 py-2 rounded-lg bg-[#c42e2e] text-white text-sm font-medium hover:bg-[#a82525] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {saving ? "Saving..." : editingId ? "Save Changes" : "Add Officer"}
+            </button>
+            <button
+              onClick={cancelForm}
+              className="px-4 py-2 rounded-lg border border-white/15 text-white/50 text-sm hover:border-white/30 hover:text-white/70 transition-colors flex items-center gap-1.5"
+            >
+              <X size={13} /> Cancel
+            </button>
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+}
+
 function ErrorBanner({ message }: { message: string }) {
   return (
     <div className="rounded-lg bg-[#c42e2e]/10 border border-[#c42e2e]/30 px-4 py-3 text-sm text-[#c42e2e]">
@@ -567,6 +896,16 @@ function ErrorBanner({ message }: { message: string }) {
 
 function LoadingState() {
   return <div className="py-8 text-center text-sm text-white/30">Loading...</div>;
+}
+
+function validateUrl(url: string): boolean {
+  if (!url) return true;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
 }
 
 function Field({ label, children, className = "" }: { label: string; children: React.ReactNode; className?: string }) {
@@ -771,6 +1110,7 @@ export default function AdminShell({ email }: AdminShellProps) {
     mission:  <MissionPanel />,
     landing:  <LandingPanel />,
     programs: <ProgramsPanel />,
+    officers: <OfficersPanel />,
   };
 
   return (

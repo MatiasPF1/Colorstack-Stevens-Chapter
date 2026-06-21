@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
+import Image from "next/image";
+import { ArrowUpRight, CalendarDays } from "lucide-react";
 
 interface ResourceCard {
   id: string;
@@ -13,74 +15,54 @@ interface ResourceCard {
 
 function ResourceCardComponent({ card }: { card: ResourceCard }) {
   return (
-    <div className="group flex flex-col rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-sm hover:border-white/25 hover:bg-white/8 transition-all duration-300">
+    <article className="group relative isolate flex min-h-full flex-col overflow-hidden rounded-lg border border-white/10 bg-[#122033]/90 shadow-[0_22px_55px_-34px_rgba(0,0,0,0.95)] ring-1 ring-white/[0.03] transition-all duration-300 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-linear-to-r before:from-transparent before:via-white/30 before:to-transparent hover:-translate-y-1 hover:border-white/20 hover:bg-[#15263a] hover:shadow-[0_28px_70px_-38px_rgba(0,0,0,0.95)]">
       {/* Image */}
-      <div className="relative h-44 w-full overflow-hidden">
-        <img
+      <div className="relative h-44 w-full overflow-hidden bg-slate-200">
+        <Image
           src={card.image}
           alt={card.title}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          fill
+          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035]"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-[#0D1929]/80 to-transparent" />
-        <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3">
-          <span className="rounded-full border border-[#c42e2e]/55 bg-[#3b1620]/85 px-3 py-1 text-xs font-semibold text-[#ffd1d1] backdrop-blur-md shadow-lg shadow-black/25">
+        <div className="absolute inset-0 bg-linear-to-t from-[#07111e]/72 via-[#07111e]/8 to-white/10" />
+        <div className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-3">
+          <span className="rounded-md border border-white/20 bg-[#111827]/85 px-3 py-1 text-xs font-semibold text-slate-100 shadow-lg shadow-black/25 backdrop-blur-md">
             {card.tag}
           </span>
-          <span className="rounded-full border border-[#2b8bbd]/50 bg-[#10273d]/88 px-3 py-1 text-xs font-semibold text-[#d1efff] backdrop-blur-md shadow-lg shadow-black/25">
+          <span className="rounded-md border border-white/20 bg-[#111827]/85 px-3 py-1 text-xs font-semibold text-slate-100 shadow-lg shadow-black/25 backdrop-blur-md">
             {card.eligibility}
           </span>
         </div>
       </div>
 
       {/* Body */}
-      <div className="flex flex-1 flex-col gap-3 p-5">
-        <h3 className="text-base font-semibold text-white leading-snug">
+      <div className="flex flex-1 flex-col gap-4 p-6">
+        <h3 className="text-lg font-semibold leading-snug text-white">
           {card.title}
         </h3>
-        <p className="text-sm text-white/55 leading-relaxed flex-1">
+        <p className="flex-1 text-sm leading-relaxed text-slate-300/75">
           {card.description}
         </p>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-white/10">
-          <div className="flex items-center gap-1.5 text-xs text-white/45">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-3.5 w-3.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
+        <div className="mt-1 flex items-center justify-between gap-4 border-t border-white/10 pt-4">
+          <div className="flex min-w-0 items-center gap-2 text-xs font-medium text-slate-400">
+            <CalendarDays className="h-4 w-4 shrink-0 text-slate-400" aria-hidden="true" />
             <span>Apply by {card.deadline}</span>
           </div>
           <a
             href={/^https?:\/\//.test(card.link) ? card.link : "#"}
             rel="noopener noreferrer"
             target="_blank"
-            className="text-xs font-medium text-white/70 hover:text-white transition-colors duration-200 flex items-center gap-1"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-semibold text-slate-200 transition-colors duration-200 hover:border-white/25 hover:bg-white/10 hover:text-white"
           >
             Learn more
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-3 w-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
+            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
           </a>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 

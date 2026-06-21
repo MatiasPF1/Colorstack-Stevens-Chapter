@@ -69,7 +69,7 @@ export default function EBoardCard({ name, role, img, bio, linkedin, email }: EB
         className={`absolute inset-0 bg-[#102945] px-7 text-left text-white transition-all duration-300 sm:px-8 ${isOpen ? "opacity-100" : "pointer-events-none opacity-0"}`}
       >
         <div className="flex h-full flex-col justify-center">
-          <div className="mb-5 h-[3px] w-10 rounded-full bg-[#d7333f]" />
+          <div className="mb-5 h-[3px] w-10 rounded-full " />
           <h3 className="text-[1.22rem] font-bold leading-tight text-white sm:text-[1.28rem]">
             {name}
           </h3>

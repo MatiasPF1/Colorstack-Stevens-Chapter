@@ -26,6 +26,11 @@ export const metadata: Metadata = {
     "Stevens tech community",
   ],
   authors: [{ name: "ColorStack Stevens" }],
+  icons: {
+    icon: "/mainPhotos/ColorstackStevensLogo.png",
+    shortcut: "/mainPhotos/ColorstackStevensLogo.png",
+    apple: "/mainPhotos/ColorstackStevensLogo.png",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
