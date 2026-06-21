@@ -15,7 +15,7 @@ export default function LoginPage() {
         <div className="flex flex-col items-center gap-3">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/ColorstackStevensLogo.png"
+              src="/mainPhotos/ColorstackStevensLogo.png"
               alt="ColorStack Stevens"
               width={44}
               height={44}

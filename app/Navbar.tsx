@@ -35,7 +35,7 @@ export default function Navbar() {
         {/* Center logo + wordmark */}
         <Link href="/" className="flex items-center gap-2 shrink-0 mr-16 translate-x-7">
           <Image
-            src="/ColorstackStevensLogo.png"
+            src="/mainPhotos/ColorstackStevensLogo.png"
             alt="ColorStack Stevens"
             width={40}
             height={40}
@@ -71,7 +71,7 @@ export default function Navbar() {
       <div className="md:hidden flex items-center justify-between px-5 py-3">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/ColorstackStevensLogo.png"
+            src="/mainPhotos/ColorstackStevensLogo.png"
             alt="ColorStack Stevens"
             width={28}
             height={28}

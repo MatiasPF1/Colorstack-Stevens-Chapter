@@ -22,12 +22,14 @@ function ResourceCardComponent({ card }: { card: ResourceCard }) {
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-linear-to-t from-[#0D1929]/80 to-transparent" />
-        <span className="absolute top-3 left-3 rounded-full bg-[#c42e2e]/20 px-3 py-1 text-xs font-semibold text-[#ff8a80] backdrop-blur-sm border border-[#c42e2e]/40">
-          {card.tag}
-        </span>
-        <span className="absolute bottom-3 right-3 rounded-full bg-sky-900/60 px-3 py-1 text-xs font-semibold text-sky-300 backdrop-blur-md border border-sky-600/40">
-          {card.eligibility}
-        </span>
+        <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3">
+          <span className="rounded-full border border-[#c42e2e]/55 bg-[#3b1620]/85 px-3 py-1 text-xs font-semibold text-[#ffd1d1] backdrop-blur-md shadow-lg shadow-black/25">
+            {card.tag}
+          </span>
+          <span className="rounded-full border border-[#2b8bbd]/50 bg-[#10273d]/88 px-3 py-1 text-xs font-semibold text-[#d1efff] backdrop-blur-md shadow-lg shadow-black/25">
+            {card.eligibility}
+          </span>
+        </div>
       </div>
 
       {/* Body */}
