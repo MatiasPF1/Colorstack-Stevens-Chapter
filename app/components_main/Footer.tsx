@@ -37,30 +37,30 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="relative w-full overflow-hidden bg-[#0D1929]">
-      <div className="relative z-10 mx-auto max-w-7xl px-5 pt-12 pb-8 sm:px-8 sm:pt-20 sm:pb-10">
+    <footer className="relative w-full overflow-hidden border-t border-white/10 bg-[linear-gradient(135deg,#091421_0%,#0D1929_50%,#111827_100%)]">
+      <div className="relative z-10 mx-auto max-w-7xl px-5 pt-10 pb-6 sm:px-8 sm:pt-12 sm:pb-8">
 
-                                    {/* Top section — 4 columns */}
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:justify-items-stretch">
+        {/* Top section - 4 columns */}
+        <div className="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.75fr_1.05fr_0.75fr] lg:gap-x-14 lg:justify-items-stretch">
 
-          {/* Col 1 — Brand */}
-          <div className="col-span-2 sm:col-span-2 lg:col-span-1 flex flex-col gap-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#dc2626]">
+          {/* Col 1 - Brand */}
+          <div className="col-span-2 sm:col-span-2 lg:col-span-1 flex flex-col gap-3">
+            <p className="text-xs font-bold uppercase tracking-[0.32em] text-[#ff3434]">
               ColorStack Stevens
             </p>
-            <h2 className="text-3xl font-bold text-white leading-tight">
+            <h2 className="text-3xl font-extrabold text-white leading-tight sm:text-4xl">
               Connect<br />
-              <span className="text-[#dc2626]">with us.</span>
+              <span className="text-[#ff3434]">with us.</span>
             </h2>
-            <p className="text-sm text-white/50 leading-relaxed">
+            <p className="max-w-sm text-sm leading-7 text-slate-300/80">
               Dedicated to increasing the number of Black and Latinx CS graduates
               who go on to launch rewarding technical careers.
             </p>
           </div>
 
-          {/* Col 2 — Quick links */}
-          <div className="flex flex-col gap-3 lg:ml-30">
-            <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-1">Quick Links</p>
+          {/* Col 2 - Quick links */}
+          <div className="flex flex-col gap-3 lg:pt-1">
+            <p className="mb-1 text-xs font-bold uppercase tracking-[0.22em] text-slate-400">Quick Links</p>
             {[
               { label: "Home", href: "/" },
               { label: "About", href: "#mission" },
@@ -70,19 +70,19 @@ export default function Footer() {
               <Link
                 key={l.label}
                 href={l.href}
-                className="text-sm text-white/50 hover:text-white transition-colors"
+                className="w-fit text-sm font-medium text-slate-300/75 transition-colors hover:text-white"
               >
                 {l.label}
               </Link>
             ))}
           </div>
 
-          {/* Col 3 — Contact */}
-          <div className="flex flex-col gap-3 text-sm text-white/50 lg:ml-15">
-            <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-1">Contact</p>
+          {/* Col 3 - Contact */}
+          <div className="flex flex-col gap-3 text-sm font-medium text-slate-300/75 lg:pt-1">
+            <p className="mb-1 text-xs font-bold uppercase tracking-[0.22em] text-slate-400">Contact</p>
             <a
               href="mailto:colorstackstevens@gmail.com"
-              className="hover:text-[#dc2626] transition-colors text-white/70"
+              className="w-fit text-white transition-colors hover:text-[#ff3434]"
             >
               colorstackstevens@gmail.com
             </a>
@@ -91,9 +91,9 @@ export default function Footer() {
             <p>Hoboken, NJ 07030</p>
           </div>
 
-          {/* Col 4 — Follow Us */}
-          <div className="flex flex-col gap-3 lg:ml-30">
-            <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-1">Follow Us</p>
+          {/* Col 4 - Follow Us */}
+          <div className="flex flex-col gap-3 lg:pt-1">
+            <p className="mb-1 text-xs font-bold uppercase tracking-[0.22em] text-slate-400">Follow Us</p>
             <div className="flex flex-col gap-3">
               {socials.map((s) => (
                 <Link
@@ -102,12 +102,12 @@ export default function Footer() {
                   aria-label={s.label}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-white/50 hover:text-[#dc2626] transition-colors group"
+                  className="group flex w-fit items-center gap-3 rounded-xl pr-3 text-slate-300/75 transition-colors hover:text-white"
                 >
-                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/5 group-hover:bg-[#dc2626]/10 transition-colors">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.06] text-slate-300 shadow-sm transition-all group-hover:border-[#ff3434]/45 group-hover:bg-[#ff3434]/12 group-hover:text-white">
                     {s.icon}
                   </span>
-                  <span className="text-sm">{s.label}</span>
+                  <span className="text-sm font-medium">{s.label}</span>
                 </Link>
               ))}
             </div>
@@ -115,20 +115,20 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="mt-14 h-px w-full bg-white/5" />
+        <div className="mt-10 h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
         {/* Bottom bar */}
-        <div className="mt-6 flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-between sm:text-left">
-          <p className="text-xs text-white/20">
-            © {new Date().getFullYear()} ColorStack  Stevens Institute of Technology. All rights reserved.
+        <div className="mt-4 flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-between sm:text-left">
+          <p className="text-xs font-medium text-slate-400/70">
+            &copy; {new Date().getFullYear()} ColorStack Stevens Institute of Technology. All rights reserved.
           </p>
-          <p className="text-xs text-white/20">
+          <p className="text-xs font-medium text-slate-400/70">
             Part of the{" "}
             <a
               href="https://www.colorstack.org"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-white/50 transition-colors"
+              className="text-slate-300/80 transition-colors hover:text-white"
             >
               ColorStack National Network
             </a>

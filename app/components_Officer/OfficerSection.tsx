@@ -46,11 +46,11 @@ const officers: Officer[] = [
     img: "/E-Board/Kevin_Secretary.jpg",
     bio: "Keeps records organized, documents decisions, and supports communication across the executive board.",
   },
-  {
-    name: "JayJay",
-    role: "External Relations",
-    img: "/E-Board/JayJay_ExternalRelations.jpg",
-    bio: "Builds relationships with partners, expands outreach, and represents the chapter beyond campus.",
+    {
+    name: "Sydney",
+    role: "PR",
+    img: "/E-Board/Sydney_PR.png",
+    bio: "Supports promotional campaigns, social presence, and communication that keeps the community engaged.",
   },
   {
     name: "Gregorio",
@@ -58,12 +58,13 @@ const officers: Officer[] = [
     img: "/E-Board/Gregorio_PR Chair.jpg",
     bio: "Leads public relations efforts, strengthens visibility, and helps shape how the chapter is presented.",
   },
-  {
-    name: "Sydney",
-    role: "PR",
-    img: "/E-Board/Sydney_PR.png",
-    bio: "Supports promotional campaigns, social presence, and communication that keeps the community engaged.",
+    {
+    name: "JayJay",
+    role: "External Relations",
+    img: "/E-Board/JayJay_ExternalRelations.jpg",
+    bio: "Builds relationships with partners, expands outreach, and represents the chapter beyond campus.",
   },
+
 ];
 
 export default function OfficerSection() {
