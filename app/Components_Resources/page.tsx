@@ -1,19 +1,72 @@
+import type { Metadata } from "next";
+import { createClient } from "@/lib/supabase/server";
 import Image from "next/image";
 import { ArrowUpRight, CalendarDays } from "lucide-react";
 
-const resourceCards = [
+export const metadata: Metadata = {
+  title: "Events and Resources",
+  description:
+    "Find ColorStack Stevens event materials, workshop slides, career resources, and student programming for computer science members at Stevens.",
+  alternates: {
+    canonical: "/Components_Resources",
+  },
+  openGraph: {
+    title: "Events and Resources | Stevens ColorStack",
+    description:
+      "Workshop slides, event materials, and career resources from ColorStack Stevens.",
+    url: "/Components_Resources",
+    images: [
+      {
+        url: "/resources/ScheduleHelpDay.png",
+        width: 1200,
+        height: 630,
+        alt: "ColorStack Stevens event resource",
+      },
+    ],
+  },
+};
+
+interface ResourceCard {
+  id: string;
+  sort_order: number;
+  title: string;
+  event: string;
+  description: string;
+  date: string;
+  image: string;
+  slides_url: string;
+  is_active: boolean;
+}
+
+const fallbackResourceCards: ResourceCard[] = [
   {
+    id: "freshman-schedule-help-day",
+    sort_order: 1,
     title: "Freshman Schedule Help Day",
     event: "Workshop Slides",
     description:
       "Presentation deck from our schedule planning session, built to help members choose classes and plan a stronger semester.",
     date: "ColorStack Stevens",
     image: "/resources/ScheduleHelpDay.png",
-    slidesUrl: "https://canva.link/xk9xdoog1q9nt89",
+    slides_url: "https://canva.link/xk9xdoog1q9nt89",
+    is_active: true,
   },
 ];
 
-export default function ResourcesPage() {
+function safeHref(url: string) {
+  return /^https?:\/\//.test(url) ? url : "#";
+}
+
+export default async function ResourcesPage() {
+  const supabase = await createClient();
+  const { data: cards, error } = await supabase
+    .from("resources")
+    .select("*")
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
+
+  const resourceCards: ResourceCard[] = error ? fallbackResourceCards : cards ?? [];
+
   return (
     <main className="min-h-screen w-full bg-[#0D1929] px-6 py-24">
       <div className="mx-auto max-w-6xl">
@@ -31,8 +84,8 @@ export default function ResourcesPage() {
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {resourceCards.map((card) => (
             <a
-              key={card.title}
-              href={card.slidesUrl}
+              key={card.id}
+              href={safeHref(card.slides_url)}
               target="_blank"
               rel="noopener noreferrer"
               className="group relative isolate flex min-h-full flex-col overflow-hidden rounded-lg border border-white/10 bg-[#122033]/90 shadow-[0_22px_55px_-34px_rgba(0,0,0,0.95)] ring-1 ring-white/[0.03] transition-all duration-300 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-linear-to-r before:from-transparent before:via-white/30 before:to-transparent hover:-translate-y-1 hover:border-white/20 hover:bg-[#15263a] hover:shadow-[0_28px_70px_-38px_rgba(0,0,0,0.95)]"
@@ -76,8 +129,8 @@ export default function ResourcesPage() {
             </a>
           ))}
         </div>
+
       </div>
     </main>
   );
 }
-

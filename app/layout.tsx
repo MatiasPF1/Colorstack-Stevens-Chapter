@@ -3,29 +3,42 @@ import "./globals.css";
 import Navbar from "./Navbar";
 import { cn } from "@/lib/utils";
 import { Inter, Geist } from "next/font/google";
+import { absoluteUrl, siteConfig, siteUrl } from "./seo";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
+  metadataBase: siteUrl,
+  applicationName: siteConfig.name,
   title: {
-    default: "Stevens ColorStack — Empowering Black & Latinx CS Students",
+    default: siteConfig.title,
     template: "%s | Stevens ColorStack",
   },
-  description:
-    "ColorStack at Stevens Institute of Technology supports Black and Latinx Computer Science students with mentorship, career resources, and community to help them graduate and launch rewarding tech careers.",
+  description: siteConfig.description,
   keywords: [
     "ColorStack Stevens",
+    "Stevens ColorStack",
     "Black CS students",
     "Latinx CS students",
+    "Black computer science students",
+    "Latinx computer science students",
     "Stevens Institute of Technology",
+    "Stevens computer science",
+    "Stevens student organization",
     "computer science diversity",
     "diversity in tech",
     "tech careers",
+    "career mentorship",
     "Hoboken NJ",
     "Stevens tech community",
   ],
   authors: [{ name: "ColorStack Stevens" }],
+  creator: "ColorStack Stevens",
+  publisher: "ColorStack Stevens",
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: "/mainPhotos/ColorstackStevensLogo.png",
     shortcut: "/mainPhotos/ColorstackStevensLogo.png",
@@ -34,13 +47,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Stevens ColorStack",
-    title: "Stevens ColorStack — Empowering Black & Latinx CS Students",
-    description:
-      "Supporting Black and Latinx Computer Science students at Stevens Institute of Technology with mentorship, career resources, and a strong community.",
+    siteName: siteConfig.name,
+    url: "/",
+    title: siteConfig.title,
+    description: siteConfig.description,
     images: [
       {
-        url: "/mainPhotos/Colorstack-Eboard.jpg",
+        url: absoluteUrl("/mainPhotos/Colorstack-Eboard.jpg"),
         width: 1400,
         height: 700,
         alt: "ColorStack Stevens E-Board members",
@@ -58,6 +71,13 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [absoluteUrl("/mainPhotos/Colorstack-Eboard.jpg")],
+  },
+  category: "education",
 };
 
 export default function RootLayout({

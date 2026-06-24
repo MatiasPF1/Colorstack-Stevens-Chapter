@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import ResourcesPanel from "./ResourcesPanel";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
@@ -10,6 +11,7 @@ import {
   Target,
   Building2,
   GraduationCap,
+  FileText,
   Users,
   Pencil,
   Trash2,
@@ -26,6 +28,7 @@ const sections = [
   { id: "hero",     label: "Hero",              icon: Images },
   { id: "mission",  label: "Mission",           icon: Target },
   { id: "landing",  label: "Where We've Landed", icon: Building2 },
+  { id: "resources", label: "Resources",         icon: FileText },
   { id: "programs", label: "Programs",           icon: GraduationCap },
   { id: "officers", label: "Officers",           icon: Users },
 ];
@@ -1109,6 +1112,7 @@ export default function AdminShell({ email }: AdminShellProps) {
     hero:     <HeroPanel />,
     mission:  <MissionPanel />,
     landing:  <LandingPanel />,
+    resources: <ResourcesPanel />,
     programs: <ProgramsPanel />,
     officers: <OfficersPanel />,
   };

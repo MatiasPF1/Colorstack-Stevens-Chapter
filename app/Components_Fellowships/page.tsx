@@ -1,6 +1,30 @@
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import Image from "next/image";
 import { ArrowUpRight, CalendarDays } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Programs, Fellowships, and Internships",
+  description:
+    "Explore fellowships, internships, research programs, and early career opportunities curated by ColorStack Stevens for computer science students.",
+  alternates: {
+    canonical: "/Components_Fellowships",
+  },
+  openGraph: {
+    title: "Programs, Fellowships, and Internships | Stevens ColorStack",
+    description:
+      "Curated opportunities for Stevens computer science students, from freshman programs to internships and research fellowships.",
+    url: "/Components_Fellowships",
+    images: [
+      {
+        url: "/mainPhotos/Colorstack-Eboard.jpg",
+        width: 1400,
+        height: 700,
+        alt: "ColorStack Stevens students and officers",
+      },
+    ],
+  },
+};
 
 interface ResourceCard {
   id: string;

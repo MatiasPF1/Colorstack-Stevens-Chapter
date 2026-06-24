@@ -33,7 +33,7 @@ export default function HeroSection({ items }: { items: HeroPhoto[] }) {
     <section
       id="hero"
       aria-label="Introduction to ColorStack at Stevens Institute of Technology"
-      className="flex-1 min-h-screen flex flex-col md:flex-row items-center max-w-7xl mx-auto w-full md:gap-26 px-6 md:px-0"
+      className="flex-1 min-h-[calc(100vh-3.5rem)] flex flex-col md:min-h-screen md:flex-row items-center max-w-7xl mx-auto w-full md:gap-26 px-5 sm:px-6 md:px-0"
     >
       {/* Left — Masonry (desktop only) */}
       <div className="hidden md:flex flex-[1.5] items-center justify-center -mt-120 mr-30">
@@ -52,10 +52,10 @@ export default function HeroSection({ items }: { items: HeroPhoto[] }) {
 
 
       {/* Right — About Text */}
-      <div className="flex-1 flex flex-col gap-5 min-w-0 md:-translate-x-20 md:mb-15 w-full px-2 md:px-0 pt-16 pb-6 md:py-0">
+      <div className="flex-1 flex flex-col items-center gap-5 min-w-0 md:items-start md:-translate-x-20 md:mb-15 w-full px-0 pt-14 pb-6 text-center md:px-0 md:py-0 md:text-left">
 
         {/* Eyebrow */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-center gap-3 md:justify-start">
           <p className="text-[#c42e2e] font-semibold text-xs tracking-[0.2em] uppercase">
             About Us
           </p>
@@ -63,30 +63,30 @@ export default function HeroSection({ items }: { items: HeroPhoto[] }) {
 
         {/* Title */}
         <div className="flex flex-col gap-1 text-center md:text-left">
-          <h1 className="text-white font-extrabold text-5xl sm:text-6xl md:text-7xl leading-none tracking-tight">
+          <h1 className="text-white font-extrabold text-4xl sm:text-6xl md:text-7xl leading-none tracking-tight">
             Stevens <span className="text-[#c42e2e]">ColorStack</span>
           </h1>
         </div>
 
         {/* Tagline */}
-        <p className="text-white/80 text-lg sm:text-xl md:text-2xl font-medium leading-snug max-w-md">
+        <p className="max-w-[18rem] text-base font-medium leading-snug text-white/80 sm:max-w-md sm:text-xl md:text-2xl">
           Helping Black and Latino Computer Science students get{" "}
           <span className="text-[#c42e2e] font-bold italic">degreed</span> and{" "}
           <span className="text-[#c42e2e] font-bold italic">hired</span> nationwide.
         </p>
 
         {/* CTA */}
-        <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-3">
+        <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 mt-3">
           <a
             href="https://www.colorstack.org/member-application-requirements"
-            className="bg-[#c42e2e] text-white font-semibold px-8 py-3.5 rounded-full hover:bg-[#a82828] active:scale-95 transition-all duration-200 shadow-lg shadow-red-900/40"
+            className="bg-[#c42e2e] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#a82828] active:scale-95 transition-all duration-200 shadow-lg shadow-red-900/40 sm:px-8"
           >
             Become a National Member
           </a>
         </div>
 
         {/* Location */}
-        <div className="flex items-center gap-2 text-white/50 text-sm mt-1">
+        <div className="flex max-w-[18rem] items-center justify-center gap-2 text-white/50 text-sm mt-1 md:justify-start">
           <MapPin size={14} className="text-[#c42e2e] shrink-0" />
           <span>1 Castle Point Terrace, Hoboken, NJ</span>
         </div>
@@ -98,7 +98,7 @@ export default function HeroSection({ items }: { items: HeroPhoto[] }) {
 
       {/* Mobile version for Masonry */}
       <div className="md:hidden w-full pb-10">
-        <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-6 px-6">
+        <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-5 px-5 sm:-mx-6 sm:px-6">
           {items.slice(0, 8).map((item) => (
             <a
               key={item.id}
