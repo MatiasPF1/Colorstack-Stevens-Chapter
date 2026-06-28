@@ -90,7 +90,7 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full", "antialiased", inter.variable, "font-sans", geist.variable)}
     >
-      <body className="min-h-full flex flex-col bg-[#0D1929]" suppressHydrationWarning>
+      <body className="min-h-full flex flex-col bg-[#f7f8fb]" suppressHydrationWarning>
         <Navbar />
         {children}
       </body>

@@ -32,10 +32,10 @@ export default function EBoardCard({ name, role, img, bio, linkedin, email }: EB
   const [isOpen, setIsOpen] = useState(false);
 
   const actionBaseClass =
-    "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[0.85rem] bg-[#29456a] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition duration-200 hover:bg-[#33537d]";
+    "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[0.85rem] bg-slate-100 text-slate-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] transition duration-200 hover:bg-[#c42e2e] hover:text-white";
 
   return (
-    <article className="relative aspect-[5/7] overflow-hidden rounded-[2rem] border border-white/8 bg-[#122033] shadow-[0_18px_45px_rgba(8,20,36,0.16)] transition-all duration-300 hover:-translate-y-1 hover:border-white/14 hover:shadow-[0_24px_65px_rgba(8,20,36,0.24)]">
+    <article className="relative aspect-[5/7] overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.12)] transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_24px_65px_rgba(15,23,42,0.18)]">
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -66,17 +66,17 @@ export default function EBoardCard({ name, role, img, bio, linkedin, email }: EB
       <div
         onClick={() => setIsOpen(false)}
         aria-hidden={!isOpen}
-        className={`absolute inset-0 bg-[#102945] px-7 text-left text-white transition-all duration-300 sm:px-8 ${isOpen ? "opacity-100" : "pointer-events-none opacity-0"}`}
+        className={`absolute inset-0 bg-white px-7 text-left text-slate-950 transition-all duration-300 sm:px-8 ${isOpen ? "opacity-100" : "pointer-events-none opacity-0"}`}
       >
         <div className="flex h-full flex-col justify-center">
           <div className="mb-5 h-[3px] w-10 rounded-full " />
-          <h3 className="text-[1.22rem] font-bold leading-tight text-white sm:text-[1.28rem]">
+          <h3 className="text-[1.22rem] font-bold leading-tight text-slate-950 sm:text-[1.28rem]">
             {name}
           </h3>
           <p className="mt-1.5 text-[0.62rem] font-bold uppercase tracking-[0.32em] text-[#ff3b4a]">
             {role}
           </p>
-          <p className="mt-5 max-w-[30ch] text-[0.88rem] leading-6 text-white/88 sm:text-[0.92rem]">
+          <p className="mt-5 max-w-[30ch] text-[0.88rem] leading-6 text-slate-600 sm:text-[0.92rem]">
             {bio ?? "Leadership profile coming soon."}
           </p>
           <div className="mt-7 flex items-center gap-3">

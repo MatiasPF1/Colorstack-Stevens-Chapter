@@ -15,7 +15,7 @@ const NavbarLinkNames = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   return (
-    <nav className="w-full bg-[#0D1929]">
+    <nav className="sticky top-0 z-50 w-full border-b border-slate-200 bg-[#f7f8fb]/95 shadow-[0_10px_35px_-28px_rgba(15,23,42,0.9)] backdrop-blur">
       {/* Desktop */}
       <div className="hidden md:flex max-w-5xl mx-auto items-center justify-between py-4 px-12">
 
@@ -25,7 +25,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-white text-[16px] font-semibold tracking-wide hover:opacity-70 transition-opacity whitespace-nowrap"
+              className="text-slate-900 text-[16px] font-semibold tracking-wide hover:text-[#c42e2e] transition-colors whitespace-nowrap"
             >
               {link.label}
             </Link>
@@ -42,7 +42,7 @@ export default function Navbar() {
             className="object-contain"
             priority
           />
-          <span className="text-white font-bold text-lg tracking-tight whitespace-nowrap text-[25px] ">
+          <span className="text-slate-950 font-bold text-lg tracking-tight whitespace-nowrap text-[25px] ">
             Stevens <span className="text-[#c42e2e]">ColorStack</span>
           </span>
         </Link>
@@ -53,12 +53,12 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-white text-[16px] font-semibold tracking-wide hover:opacity-70 transition-opacity whitespace-nowrap"
+              className="text-slate-900 text-[16px] font-semibold tracking-wide hover:text-[#c42e2e] transition-colors whitespace-nowrap"
             >
               {link.label}
             </Link>
           ))}
-          <Link href="/Components_Login" className="border-2 border-white text-white text-sm font-semibold px-5 py-1.5 rounded-full hover:bg-white hover:text-[#0D1929] transition-colors whitespace-nowrap">
+          <Link href="/Components_Login" className="border-2 border-[#c42e2e] text-[#c42e2e] text-sm font-semibold px-5 py-1.5 rounded-full hover:bg-[#c42e2e] hover:text-white transition-colors whitespace-nowrap">
             Log In
           </Link>
         </div>
@@ -78,7 +78,7 @@ export default function Navbar() {
             className="object-contain"
             priority
           />
-          <span className="text-white font-bold text-sm tracking-tight">
+          <span className="text-slate-950 font-bold text-sm tracking-tight">
             SIT <span className="text-[#c42e2e]">ColorStack</span>
           </span>
         </Link>
@@ -86,7 +86,7 @@ export default function Navbar() {
         {/* Burger button */}
         <button
           onClick={() => setOpen(!open)}
-          className="text-white p-1 focus:outline-none"
+          className="text-slate-950 p-1 focus:outline-none"
           aria-label="Toggle menu"
         >
           {open ? (
@@ -103,13 +103,13 @@ export default function Navbar() {
 
       {/* Mobile dropdown */}
       {open && (
-        <div className="md:hidden bg-[#162233] flex flex-col px-5 pb-4 gap-4">
+        <div className="md:hidden flex flex-col gap-4 border-t border-slate-200 bg-[#f7f8fb] px-5 pb-4 pt-4 shadow-sm">
           {NavbarLinkNames.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="text-white text-sm font-medium tracking-wide hover:opacity-80 transition-opacity"
+              className="text-slate-900 text-sm font-medium tracking-wide hover:text-[#c42e2e] transition-colors"
             >
               {link.label}
             </Link>
@@ -117,7 +117,7 @@ export default function Navbar() {
           <Link
             href="/Components_Login"
             onClick={() => setOpen(false)}
-            className="self-start border-2 border-white text-white text-sm font-semibold px-5 py-1.5 rounded-full hover:bg-white hover:text-[#0D1929] transition-colors"
+            className="self-start border-2 border-[#c42e2e] text-[#c42e2e] text-sm font-semibold px-5 py-1.5 rounded-full hover:bg-[#c42e2e] hover:text-white transition-colors"
           >
             Log In
           </Link>

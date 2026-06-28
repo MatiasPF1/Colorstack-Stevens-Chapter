@@ -37,7 +37,7 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="relative w-full overflow-hidden border-t border-white/10 bg-[linear-gradient(135deg,#091421_0%,#0D1929_50%,#111827_100%)]">
+    <footer className="relative w-full overflow-hidden border-t border-slate-200 bg-[#f7f8fb]">
       <div className="relative z-10 mx-auto max-w-7xl px-5 pt-10 pb-6 sm:px-8 sm:pt-12 sm:pb-8">
 
         {/* Top section - 4 columns */}
@@ -48,11 +48,11 @@ export default function Footer() {
             <p className="text-xs font-bold uppercase tracking-[0.32em] text-[#ff3434]">
               ColorStack Stevens
             </p>
-            <h2 className="text-3xl font-extrabold text-white leading-tight sm:text-4xl">
+            <h2 className="text-3xl font-extrabold text-slate-950 leading-tight sm:text-4xl">
               Connect<br />
               <span className="text-[#ff3434]">with us.</span>
             </h2>
-            <p className="max-w-sm text-sm leading-7 text-slate-300/80">
+            <p className="max-w-sm text-sm leading-7 text-slate-600">
               Dedicated to increasing the number of Black and Latinx CS graduates
               who go on to launch rewarding technical careers.
             </p>
@@ -60,7 +60,7 @@ export default function Footer() {
 
           {/* Col 2 - Quick links */}
           <div className="flex flex-col gap-3 lg:pt-1">
-            <p className="mb-1 text-xs font-bold uppercase tracking-[0.22em] text-slate-400">Quick Links</p>
+            <p className="mb-1 text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Quick Links</p>
             {[
               { label: "Home", href: "/" },
               { label: "About", href: "#mission" },
@@ -70,7 +70,7 @@ export default function Footer() {
               <Link
                 key={l.label}
                 href={l.href}
-                className="w-fit text-sm font-medium text-slate-300/75 transition-colors hover:text-white"
+                className="w-fit text-sm font-medium text-slate-600 transition-colors hover:text-[#ff3434]"
               >
                 {l.label}
               </Link>
@@ -78,11 +78,11 @@ export default function Footer() {
           </div>
 
           {/* Col 3 - Contact */}
-          <div className="flex flex-col gap-3 text-sm font-medium text-slate-300/75 lg:pt-1">
-            <p className="mb-1 text-xs font-bold uppercase tracking-[0.22em] text-slate-400">Contact</p>
+          <div className="flex flex-col gap-3 text-sm font-medium text-slate-600 lg:pt-1">
+            <p className="mb-1 text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Contact</p>
             <a
               href="mailto:colorstackstevens@gmail.com"
-              className="w-fit text-white transition-colors hover:text-[#ff3434]"
+              className="w-fit text-slate-950 transition-colors hover:text-[#ff3434]"
             >
               colorstackstevens@gmail.com
             </a>
@@ -93,7 +93,7 @@ export default function Footer() {
 
           {/* Col 4 - Follow Us */}
           <div className="flex flex-col gap-3 lg:pt-1">
-            <p className="mb-1 text-xs font-bold uppercase tracking-[0.22em] text-slate-400">Follow Us</p>
+            <p className="mb-1 text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Follow Us</p>
             <div className="flex flex-col gap-3">
               {socials.map((s) => (
                 <Link
@@ -102,9 +102,9 @@ export default function Footer() {
                   aria-label={s.label}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex w-fit items-center gap-3 rounded-xl pr-3 text-slate-300/75 transition-colors hover:text-white"
+                  className="group flex w-fit items-center gap-3 rounded-xl pr-3 text-slate-600 transition-colors hover:text-[#ff3434]"
                 >
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.06] text-slate-300 shadow-sm transition-all group-hover:border-[#ff3434]/45 group-hover:bg-[#ff3434]/12 group-hover:text-white">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 shadow-sm transition-all group-hover:border-[#ff3434]/45 group-hover:bg-[#ff3434]/10 group-hover:text-[#ff3434]">
                     {s.icon}
                   </span>
                   <span className="text-sm font-medium">{s.label}</span>
@@ -115,20 +115,20 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="mt-10 h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+        <div className="mt-10 h-px w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
 
         {/* Bottom bar */}
         <div className="mt-4 flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-between sm:text-left">
-          <p className="text-xs font-medium text-slate-400/70">
+          <p className="text-xs font-medium text-slate-500">
             &copy; {new Date().getFullYear()} ColorStack Stevens Institute of Technology. All rights reserved.
           </p>
-          <p className="text-xs font-medium text-slate-400/70">
+          <p className="text-xs font-medium text-slate-500">
             Part of the{" "}
             <a
               href="https://www.colorstack.org"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-300/80 transition-colors hover:text-white"
+              className="text-slate-700 transition-colors hover:text-[#ff3434]"
             >
               ColorStack National Network
             </a>

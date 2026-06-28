@@ -63,13 +63,13 @@ export default function HeroSection({ items }: { items: HeroPhoto[] }) {
 
         {/* Title */}
         <div className="flex flex-col gap-1 text-center md:text-left">
-          <h1 className="text-white font-extrabold text-4xl sm:text-6xl md:text-7xl leading-none tracking-tight">
+          <h1 className="text-slate-950 font-extrabold text-4xl sm:text-6xl md:text-7xl leading-none tracking-tight">
             Stevens <span className="text-[#c42e2e]">ColorStack</span>
           </h1>
         </div>
 
         {/* Tagline */}
-        <p className="max-w-[18rem] text-base font-medium leading-snug text-white/80 sm:max-w-md sm:text-xl md:text-2xl">
+        <p className="max-w-[18rem] text-base font-medium leading-snug text-slate-700 sm:max-w-md sm:text-xl md:text-2xl">
           Helping Black and Latino Computer Science students get{" "}
           <span className="text-[#c42e2e] font-bold italic">degreed</span> and{" "}
           <span className="text-[#c42e2e] font-bold italic">hired</span> nationwide.
@@ -86,7 +86,7 @@ export default function HeroSection({ items }: { items: HeroPhoto[] }) {
         </div>
 
         {/* Location */}
-        <div className="flex max-w-[18rem] items-center justify-center gap-2 text-white/50 text-sm mt-1 md:justify-start">
+        <div className="flex max-w-[18rem] items-center justify-center gap-2 text-slate-500 text-sm mt-1 md:justify-start">
           <MapPin size={14} className="text-[#c42e2e] shrink-0" />
           <span>1 Castle Point Terrace, Hoboken, NJ</span>
         </div>

@@ -22,16 +22,16 @@ export default function LoginPage() {
               className="object-contain"
               priority
             />
-            <span className="text-white font-bold text-2xl tracking-tight">
+            <span className="text-slate-950 font-bold text-2xl tracking-tight">
               SIT <span className="text-[#c42e2e]">ColorStack</span>
             </span>
           </Link>
-          <p className="text-white/50 text-sm">Sign in to your account</p>
+          <p className="text-slate-500 text-sm">Sign in to your account</p>
         </div>
         {/* Card */}
         <form
           action={formAction}
-          className="bg-white/5 border border-white/10 rounded-2xl p-8 flex flex-col gap-6 shadow-xl shadow-black/30"
+          className="rounded-2xl border border-slate-200 bg-white p-8 flex flex-col gap-6 shadow-xl shadow-slate-200/80"
         >
           {/* Error message returned from the server action */}
           {state?.error && (
@@ -42,7 +42,7 @@ export default function LoginPage() {
 
           {/* Email */}
           <div className="flex flex-col gap-2">
-            <label className="text-white/70 text-sm font-medium" htmlFor="email">
+            <label className="text-slate-700 text-sm font-medium" htmlFor="email">
               Email
             </label>
             <input
@@ -51,13 +51,13 @@ export default function LoginPage() {
               type="email"
               placeholder="you@sit.edu"
               required
-              className="bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm outline-none focus:border-[#c42e2e] focus:ring-1 focus:ring-[#c42e2e] transition-colors"
+              className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-950 placeholder-slate-400 text-sm outline-none focus:border-[#c42e2e] focus:ring-1 focus:ring-[#c42e2e] transition-colors"
             />
           </div>
 
           {/* Password */}
           <div className="flex flex-col gap-2">
-            <label className="text-white/70 text-sm font-medium" htmlFor="password">
+            <label className="text-slate-700 text-sm font-medium" htmlFor="password">
               Password
             </label>
             <div className="relative">
@@ -67,12 +67,12 @@ export default function LoginPage() {
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 required
-                className="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm outline-none focus:border-[#c42e2e] focus:ring-1 focus:ring-[#c42e2e] transition-colors pr-12"
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-950 placeholder-slate-400 text-sm outline-none focus:border-[#c42e2e] focus:ring-1 focus:ring-[#c42e2e] transition-colors pr-12"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors text-xs font-medium"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-800 transition-colors text-xs font-medium"
                 aria-label="Toggle password visibility"
               >
                 {showPassword ? "Hide" : "Show"}

@@ -485,7 +485,7 @@ function ProgramsPanel() {
               <select
                 value={form.tag}
                 onChange={(e) => setForm({ ...form, tag: e.target.value })}
-                className="w-full bg-[#0D1929] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
+                className="w-full bg-slate-950 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
               >
                 {TAG_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
               </select>
@@ -495,7 +495,7 @@ function ProgramsPanel() {
               <select
                 value={form.eligibility}
                 onChange={(e) => setForm({ ...form, eligibility: e.target.value })}
-                className="w-full bg-[#0D1929] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
+                className="w-full bg-slate-950 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
               >
                 {ELIGIBILITY_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
               </select>
@@ -1118,9 +1118,9 @@ export default function AdminShell({ email }: AdminShellProps) {
   };
 
   return (
-    <div className="flex h-screen bg-[#0D1929] font-sans">
+    <div className="flex h-screen bg-white font-sans">
       {/* Sidebar */}
-      <aside className="w-56 bg-[#0a1422] border-r border-white/10 flex flex-col">
+      <aside className="w-56 bg-slate-950 border-r border-white/10 flex flex-col">
         {/* Brand */}
         <div className="px-5 pt-6 pb-4 border-b border-white/10">
           <p className="text-xs font-semibold text-white/40 uppercase tracking-widest leading-tight">ColorStack</p>

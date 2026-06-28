@@ -39,10 +39,10 @@ export default function WhereWeveLanded({ logos = FALLBACK_LOGOS }: { logos?: Lo
 
 {/*Container for the where we landed(if you are from NYU colorstack watching this, thanks for the component)*/}
     <div className="md:-translate-y-16">
-      <h2 className="text-3xl md:text-4xl font-bold text-white">
+      <h2 className="text-3xl md:text-4xl font-bold text-slate-950">
         Where We&apos;ve Landed
       </h2>
-      <p className="mt-3 text-base md:text-lg text-white/60 max-w-2xl mx-auto">
+      <p className="mt-3 text-base md:text-lg text-slate-600 max-w-2xl mx-auto">
         ColorStack members have interned and gone full time at top tech companies
       </p>
     </div>

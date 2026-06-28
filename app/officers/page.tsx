@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 
 export default function OfficersPage() {
   return (
-    <main className="min-h-screen w-full bg-[#0D1929]">
+    <main className="min-h-screen w-full bg-[#f7f8fb]">
       <OfficerSection />
     </main>
   );
