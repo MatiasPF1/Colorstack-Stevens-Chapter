@@ -1118,7 +1118,7 @@ export default function AdminShell({ email }: AdminShellProps) {
   };
 
   return (
-    <div className="flex h-screen bg-white font-sans">
+    <div className="flex h-screen bg-slate-950 font-sans">
       {/* Sidebar */}
       <aside className="w-56 bg-slate-950 border-r border-white/10 flex flex-col">
         {/* Brand */}
