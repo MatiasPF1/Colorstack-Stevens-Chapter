@@ -29,7 +29,7 @@ const sections = [
   { id: "mission",  label: "Mission",           icon: Target },
   { id: "landing",  label: "Where We've Landed", icon: Building2 },
   { id: "resources", label: "Resources",         icon: FileText },
-  { id: "programs", label: "Programs",           icon: GraduationCap },
+  { id: "programs", label: "Opportunities",      icon: GraduationCap },
   { id: "officers", label: "Officers",           icon: Users },
 ];
 
@@ -276,7 +276,19 @@ interface ProgramCard {
   tag: string;
   eligibility: string;
   image: string;
+  college_image: string | null;
+  host_name: string | null;
+  location: string | null;
   link: string;
+  opportunity_type: "program" | "hackathon";
+  proximity_rank: number;
+  timeline_status: "Open now" | "Opens soon" | "Expected" | "Watch";
+  timeline: string;
+  previous_timeline: string;
+  opens_on: string | null;
+  closes_on: string | null;
+  sort_order: number;
+  source_checked_on: string;
 }
 
 const defaultCard: Omit<ProgramCard, "id"> = {
@@ -286,11 +298,23 @@ const defaultCard: Omit<ProgramCard, "id"> = {
   tag: "Internship",
   eligibility: "All Years",
   image: "",
+  college_image: null,
+  host_name: null,
+  location: null,
   link: "",
+  opportunity_type: "program",
+  proximity_rank: 999,
+  timeline_status: "Expected",
+  timeline: "",
+  previous_timeline: "",
+  opens_on: null,
+  closes_on: null,
+  sort_order: 999,
+  source_checked_on: "",
 };
 
-const TAG_OPTIONS = ["Internship", "Fellowship", "Research", "Program"];
-const ELIGIBILITY_OPTIONS = ["Freshman & Sophomore", "Junior & Senior", "All Years"];
+const TAG_OPTIONS = ["Internship", "Fellowship", "Research", "Program", "Hackathon"];
+const STATUS_OPTIONS: ProgramCard["timeline_status"][] = ["Open now", "Opens soon", "Expected", "Watch"];
 
 function ProgramsPanel() {
   const supabase = createClient();
@@ -322,6 +346,7 @@ function ProgramsPanel() {
     const { data, error } = await supabase
       .from("programs")
       .select("*")
+      .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true });
     if (error) setError(error.message);
     else setCards(data ?? []);
@@ -334,7 +359,27 @@ function ProgramsPanel() {
   function openEdit(card: ProgramCard) {
     setEditingId(card.id);
     setShowAddForm(false);
-    setForm({ title: card.title, description: card.description, deadline: card.deadline, tag: card.tag, eligibility: card.eligibility, image: card.image, link: card.link });
+    setForm({
+      title: card.title,
+      description: card.description,
+      deadline: card.deadline,
+      tag: card.tag,
+      eligibility: card.eligibility,
+      image: card.image,
+      college_image: card.college_image,
+      host_name: card.host_name,
+      location: card.location,
+      link: card.link,
+      opportunity_type: card.opportunity_type,
+      proximity_rank: card.proximity_rank,
+      timeline_status: card.timeline_status,
+      timeline: card.timeline,
+      previous_timeline: card.previous_timeline ?? "",
+      opens_on: card.opens_on,
+      closes_on: card.closes_on,
+      sort_order: card.sort_order,
+      source_checked_on: card.source_checked_on,
+    });
   }
 
   function openAdd() {
@@ -363,7 +408,8 @@ function ProgramsPanel() {
     if (!editingId) return;
     if (!validateLink(form.link)) { setError("Link must be a valid https:// URL."); return; }
     setSaving(true);
-    const { error } = await supabase.from("programs").update(form).eq("id", editingId);
+    const payload = { ...form, deadline: form.timeline, source_checked_on: new Date().toISOString().slice(0, 10) };
+    const { error } = await supabase.from("programs").update(payload).eq("id", editingId);
     if (error) setError(error.message);
     else { cancelForm(); await fetchCards(); }
     setSaving(false);
@@ -372,7 +418,8 @@ function ProgramsPanel() {
   async function saveAdd() {
     if (!validateLink(form.link)) { setError("Link must be a valid https:// URL."); return; }
     setSaving(true);
-    const { error } = await supabase.from("programs").insert(form);
+    const payload = { ...form, deadline: form.timeline, source_checked_on: new Date().toISOString().slice(0, 10) };
+    const { error } = await supabase.from("programs").insert(payload);
     if (error) setError(error.message);
     else { cancelForm(); await fetchCards(); }
     setSaving(false);
@@ -386,7 +433,7 @@ function ProgramsPanel() {
 
   return (
     <div className="space-y-6">
-      <SectionHeader title="Programs & Fellowships" description="Add, edit, or remove opportunity cards shown on the Programs page." />
+      <SectionHeader title="Programs, Fellowships & Hackathons" description="Add, edit, or remove cards shown on the Opportunities page." />
 
       {error && (
         <div className="rounded-lg bg-[#c42e2e]/10 border border-[#c42e2e]/30 px-4 py-3 text-sm text-[#c42e2e]">
@@ -411,8 +458,8 @@ function ProgramsPanel() {
               >
                 {/* Thumbnail */}
                 <div className="h-14 w-20 max-w-20 shrink-0 rounded-lg overflow-hidden bg-white/5 border border-white/10">
-                  {card.image ? (
-                    <img src={card.image} alt={card.title} className="h-full w-full object-cover" />
+                  {card.college_image || card.image ? (
+                    <img src={card.college_image || card.image} alt={card.title} className="h-full w-full object-cover" />
                   ) : (
                     <div className="h-full w-full flex items-center justify-center text-white/20 text-xs">No img</div>
                   )}
@@ -424,9 +471,12 @@ function ProgramsPanel() {
                   <p className="text-xs text-white/40 mt-0.5 line-clamp-1">{card.description}</p>
                   <div className="flex items-center gap-2 mt-2 flex-wrap">
                     <span className="px-2 py-0.5 rounded-full bg-white/10 text-[10px] text-white/60">{card.tag}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-white/10 text-[10px] text-white/60 capitalize">{card.opportunity_type}</span>
                     <span className="px-2 py-0.5 rounded-full bg-white/10 text-[10px] text-white/60">{card.eligibility}</span>
-                    <span className="text-[10px] text-white/30">Deadline: {card.deadline}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-white/10 text-[10px] text-white/60">{card.timeline_status}</span>
+                    <span className="text-[10px] text-white/30">Priority: {card.sort_order}</span>
                   </div>
+                  <p className="mt-1 text-[11px] text-white/45 line-clamp-1">{card.timeline}</p>
                 </div>
 
                 {/* Actions */}
@@ -472,15 +522,6 @@ function ProgramsPanel() {
               />
             </Field>
 
-            <Field label="Deadline">
-              <input
-                value={form.deadline}
-                onChange={(e) => setForm({ ...form, deadline: e.target.value })}
-                placeholder="e.g. Nov 1, 2025 or Rolling"
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30"
-              />
-            </Field>
-
             <Field label="Tag">
               <select
                 value={form.tag}
@@ -491,14 +532,81 @@ function ProgramsPanel() {
               </select>
             </Field>
 
-            <Field label="Eligibility">
+            <Field label="Opportunity type">
               <select
-                value={form.eligibility}
-                onChange={(e) => setForm({ ...form, eligibility: e.target.value })}
+                value={form.opportunity_type}
+                onChange={(e) => setForm({ ...form, opportunity_type: e.target.value as ProgramCard["opportunity_type"] })}
                 className="w-full bg-slate-950 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
               >
-                {ELIGIBILITY_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
+                <option value="program">Program</option>
+                <option value="hackathon">Hackathon</option>
               </select>
+            </Field>
+
+            <Field label="Timeline status">
+              <select
+                value={form.timeline_status}
+                onChange={(e) => setForm({ ...form, timeline_status: e.target.value as ProgramCard["timeline_status"] })}
+                className="w-full bg-slate-950 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
+              >
+                {STATUS_OPTIONS.map((status) => <option key={status} value={status}>{status}</option>)}
+              </select>
+            </Field>
+
+            <Field label="Eligibility">
+              <input
+                value={form.eligibility}
+                onChange={(e) => setForm({ ...form, eligibility: e.target.value })}
+                placeholder="e.g. 1st & 2nd Year"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30"
+              />
+            </Field>
+
+            <Field label="Sort priority">
+              <input
+                type="number"
+                min={1}
+                value={form.sort_order}
+                onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) || 999 })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
+              />
+            </Field>
+
+            <Field label="Distance priority (lower is closer)">
+              <input
+                type="number"
+                min={0}
+                value={form.proximity_rank}
+                onChange={(e) => setForm({ ...form, proximity_rank: Number(e.target.value) || 0 })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
+              />
+            </Field>
+
+            <Field label="Host college">
+              <input
+                value={form.host_name ?? ""}
+                onChange={(e) => setForm({ ...form, host_name: e.target.value || null })}
+                placeholder="e.g. Rutgers University-New Brunswick"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30"
+              />
+            </Field>
+
+            <Field label="Location">
+              <input
+                value={form.location ?? ""}
+                onChange={(e) => setForm({ ...form, location: e.target.value || null })}
+                placeholder="e.g. Piscataway, NJ"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30"
+              />
+            </Field>
+
+            <Field label="Campus image path">
+              <input
+                value={form.college_image ?? ""}
+                onChange={(e) => setForm({ ...form, college_image: e.target.value || null })}
+                placeholder="/resources/campuses/rutgers.jpg"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30"
+              />
             </Field>
 
             <Field label="Image">
@@ -549,6 +657,43 @@ function ProgramsPanel() {
                 placeholder="Short description of the opportunity..."
                 rows={3}
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30 resize-none"
+              />
+            </Field>
+
+            <Field label="Current / next timeline" className="sm:col-span-2">
+              <input
+                value={form.timeline}
+                onChange={(e) => setForm({ ...form, timeline: e.target.value })}
+                placeholder="e.g. Opens Sep 11, 2026; closes Oct 18"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30"
+              />
+            </Field>
+
+            <Field label="Previous cycle reference" className="sm:col-span-2">
+              <textarea
+                value={form.previous_timeline}
+                onChange={(e) => setForm({ ...form, previous_timeline: e.target.value })}
+                placeholder="Specific prior opening window or program dates..."
+                rows={2}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-white/30 resize-none"
+              />
+            </Field>
+
+            <Field label="Announced opening date (optional)">
+              <input
+                type="date"
+                value={form.opens_on ?? ""}
+                onChange={(e) => setForm({ ...form, opens_on: e.target.value || null })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
+              />
+            </Field>
+
+            <Field label="Announced closing date (optional)">
+              <input
+                type="date"
+                value={form.closes_on ?? ""}
+                onChange={(e) => setForm({ ...form, closes_on: e.target.value || null })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
               />
             </Field>
           </div>

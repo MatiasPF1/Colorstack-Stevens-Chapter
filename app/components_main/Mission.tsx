@@ -99,7 +99,7 @@ export default function Mission({ missionPhotos = {} }: { missionPhotos?: Missio
           {bulletPoints.map((bp) => (
             <li
               key={bp.title}
-              className="bg-white/70 py-1.5 pr-5"
+              className="py-1.5 pr-5"
             >
               <p className="text-[0.9rem] font-semibold leading-6 text-slate-950">{bp.title}</p>
               <p className="mt-0.5 text-sm leading-6 text-slate-600">{bp.description}</p>
